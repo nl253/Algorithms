@@ -1,6 +1,8 @@
 
 **/repos/
 
+**/the-super-tiny-compiler.js
+
 # password storage
 
 .netrc
