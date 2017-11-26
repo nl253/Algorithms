@@ -9,10 +9,6 @@ from typing import Iterable
 from tokenizer import Token
 
 
-def handle(token: Token):
-    pass
-
-
 def parse(input_tokens: Iterable[Token]) -> Iterable[Token]:
     if not input_tokens: raise Exception()
     output: deque = deque(input_tokens)
