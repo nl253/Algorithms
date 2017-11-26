@@ -1,0 +1,7 @@
+P is equivalent to Q iff Q is equivalent to P 
+P implies Q iff (not P or Q)
+P or negation of P is equivalent to true
+false or true iff true
+P is equivalent to Q or not (P is equivalent to Q)
+(P, Q, R entail false) iff ((P and Q and R) entails false)
+entails true
