@@ -7,7 +7,10 @@ import java.util.Collection;
 /**
  * In mathematics, two sets are said to be disjoint sets if they have no element
  * in common. Equivalently, disjoint sets are sets whose intersection is the
- * empty set. source: https://en.wikipedia.org/wiki/Disjoint_sets
+ * empty set. (https://en.wikipedia.org/wiki/Disjoint_sets)
+ * <p>
+ * For now on, unless specified, the information is a direct citation from
+ * https://en.wikipedia.org/wiki/Disjoint-set_data_structure
  * <p>
  * Disjoint-set data structure, also called a union–find data structure or
  * merge–find set, is a data structure that keeps track of a set of elements
@@ -64,7 +67,6 @@ class DisjointSet<E> {
     private void makeSet(Iterable<E> items) {
         items.forEach(x -> elements.add(new Element<>(x)));
     }
-
 
     /**
      * Pretty printing.
@@ -134,7 +136,7 @@ class DisjointSet<E> {
          * @param element with which you want to join this Element
          */
 
-        @SuppressWarnings("MethodWithMultipleReturnPoints")
+        @SuppressWarnings({"MethodWithMultipleReturnPoints", "LawOfDemeter"})
         void union(Element<E> element) {
 
             Element<E> xRoot = element.find();
