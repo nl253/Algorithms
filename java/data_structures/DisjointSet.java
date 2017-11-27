@@ -9,8 +9,8 @@ import java.util.Collection;
  * in common. Equivalently, disjoint sets are sets whose intersection is the
  * empty set. (https://en.wikipedia.org/wiki/Disjoint_sets)
  * <p>
- * For now on, unless specified, the information is a direct citation from
- * https://en.wikipedia.org/wiki/Disjoint-set_data_structure
+ * For now on, unless specified otherwise, the information is a direct citation
+ * from https://en.wikipedia.org/wiki/Disjoint-set_data_structure
  * <p>
  * Disjoint-set data structure, also called a union–find data structure or
  * merge–find set, is a data structure that keeps track of a set of elements

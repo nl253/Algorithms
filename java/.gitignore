@@ -13,6 +13,8 @@ eggsa
 repos/
 lib/
 lib64/
+.idea/
+repos/
 parts/
 sdist/
 var/
