@@ -8,8 +8,9 @@ build/
 develop-eggs/
 dist/
 downloads/
-eggs/
+eggsa
 .eggs/
+repos/
 lib/
 lib64/
 parts/

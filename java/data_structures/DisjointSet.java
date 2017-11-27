@@ -154,7 +154,7 @@ class DisjointSet<E> {
 
     @Override
     public String toString() {
-        return MessageFormat.format("DisjointSet'{'items={0}'}'", items);
+        return MessageFormat.format("DisjointSet<{0}>", items.toString());
     }
 }
 
