@@ -2,11 +2,11 @@
 numpy
 
 # dev
-pudb       # debugger     
-profiling  # profiler     
+pudb       # debugger
+profiling  # profiler
 jupyter    # interacitve console
 isort      # consisten imports
-pylint     # linter       
-pylama     # linter       
-yapf       # formatter    
+pylint     # linter
+pylama     # linter
+yapf       # formatter
 # vim:ft=conf:
