@@ -1,8 +1,8 @@
 package data_structures;
 
 import java.text.MessageFormat;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * In mathematics, two sets are said to be disjoint sets if they have no element
@@ -24,28 +24,28 @@ import java.util.Set;
 class DisjointSet<E> {
 
     private static final int INITIAL_CAPACITY = 20;
-    private Set<Element<E>> items;
-
+    private Collection<Element<E>> elements;
 
     DisjointSet() {
-        items = new HashSet<>(INITIAL_CAPACITY);
+        elements = new ArrayList<>(INITIAL_CAPACITY);
     }
 
     /**
-     * @param newItems inital items in the Set, automatically passed to
+     * @param initalElements initial items in the Set, automatically passed to
      * makeSet().
      */
 
     @SuppressWarnings("ImplicitCallToSuper")
-    DisjointSet(Iterable<E> newItems) {
-        makeSet(newItems);
+    DisjointSet(Collection<E> initalElements) {
+        elements = new ArrayList<>(initalElements.size());
+        makeSet(initalElements);
     }
 
     @SuppressWarnings({"LocalCanBeFinal", "ReturnOfNull", "MethodWithMultipleReturnPoints"})
-    Element<E> find(E item) {
+    Element<E> find(E id) {
         Element<E> result = null;
-        for (Element<E> element : items)
-            if (item.equals(element.data)) result = element.find();
+        for (Element<E> element : elements)
+            if (element.equals(id)) result = element.find();
         return result;
     }
 
@@ -62,7 +62,19 @@ class DisjointSet<E> {
      */
 
     private void makeSet(Iterable<E> items) {
-        items.forEach(x -> this.items.add(new Element<>(x)));
+        items.forEach(x -> elements.add(new Element<>(x)));
+    }
+
+
+    /**
+     * Pretty printing.
+     *
+     * @return string representation of this object
+     */
+
+    @Override
+    public String toString() {
+        return MessageFormat.format("DisjointSet<{0}>", elements.toString());
     }
 
     /**
@@ -77,15 +89,16 @@ class DisjointSet<E> {
      * @param <E>
      */
 
-    @SuppressWarnings({"NonStaticInnerClassInSecureContext", "PackageVisibleField", "InstanceVariableOfConcreteClass", "InstanceVariableNamingConvention", "FieldNotUsedInToString", "MethodParameterOfConcreteClass", "InnerClassMayBeStatic", "PackageVisibleInnerClass", "ClassNamingConvention", "TypeParameterHidesVisibleType"})
-    class Element<E> {
+    @SuppressWarnings({"NonStaticInnerClassInSecureContext", "PackageVisibleField", "InstanceVariableOfConcreteClass", "InstanceVariableNamingConvention", "FieldNotUsedInToString", "MethodParameterOfConcreteClass", "InnerClassMayBeStatic", "PackageVisibleInnerClass", "ClassNamingConvention", "TypeParameterHidesVisibleType", "EqualsAndHashcode"})
+    private class Element<E> {
 
-        final E data;
+        final E id;
         Element<E> parent;
         int rank;
 
-        Element(E element) {
-            data = element;
+        Element(E id) {
+            this.id = id;
+            // initially the parent is set to itself
             parent = this;
         }
 
@@ -97,7 +110,7 @@ class DisjointSet<E> {
 
         @Override
         public String toString() {
-            return String.format("Element<%s>", data.toString());
+            return String.format("Element<%s>", id.toString());
         }
 
         /**
@@ -124,24 +137,30 @@ class DisjointSet<E> {
         @SuppressWarnings("MethodWithMultipleReturnPoints")
         void union(Element<E> element) {
 
-            Element<E> elRoot = element.find();
-            Element<E> thisRoot = find();
+            Element<E> xRoot = element.find();
+            Element<E> yRoot = find();
 
             // x and y are already in the same set
-            if (elRoot.equals(thisRoot)) return;
+            if (yRoot.equals(xRoot)) return;
 
-            if (elRoot.rank >= thisRoot.rank) {
-                thisRoot.parent = elRoot.parent;
-            } else {
-                elRoot.parent = thisRoot.parent;
+            // attach the shorter to longer
+
+            // xRoot is shorter, yRoot is longer
+            if (xRoot.rank < yRoot.rank) yRoot.parent = xRoot.parent;
+                // yRoot is shorter, xRoot is longer
+            else if (xRoot.rank > yRoot.rank) xRoot.parent = yRoot.parent;
+            else {
+                xRoot.parent = yRoot.parent;
+                xRoot.parent.rank++;
             }
         }
 
         /**
-         * Find(x) follows the chain of parent pointers from x upwards through
-         * the tree until an element is reached whose parent is itself. This
-         * element is the root of the tree and is the representative member of
-         * the set to which x belongs, and may be x itself.
+         * Find follows the chain of parent pointers from x upwards through the
+         * tree until an element is reached whose parent is itself.
+         * <p>
+         * This element is the root of the tree and is the representative member
+         * of the set to which the item belongs, and may be the item itself.
          */
 
         @SuppressWarnings("MethodCallInLoopCondition")
@@ -150,11 +169,18 @@ class DisjointSet<E> {
             while (!focus.parent.equals(focus)) focus = focus.parent;
             return focus;
         }
-    }
 
-    @Override
-    public String toString() {
-        return MessageFormat.format("DisjointSet<{0}>", items.toString());
+        /**
+         * When you compare Elements you are actually comparing their ids.
+         *
+         * @param o object you want to compare this to
+         * @return boolean
+         */
+
+        @Override
+        public boolean equals(final Object o) {
+            return id.equals(o);
+        }
     }
 }
 
