@@ -1,5 +1,6 @@
 package data_structures;
 
+import com.sun.istack.internal.Nullable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +28,7 @@ import java.util.Collection;
 class DisjointSet<E> {
 
     private static final int INITIAL_CAPACITY = 20;
+    @SuppressWarnings("FieldMayBeFinal")
     private Collection<Element<E>> elements;
 
     DisjointSet() {
@@ -44,8 +46,8 @@ class DisjointSet<E> {
         makeSet(initalElements);
     }
 
-    @SuppressWarnings({"LocalCanBeFinal", "ReturnOfNull", "MethodWithMultipleReturnPoints"})
-    Element<E> find(E id) {
+    @Nullable
+    Element<E> find(final E id) {
         Element<E> result = null;
         for (Element<E> element : elements)
             if (element.equals(id)) result = element.find();
@@ -179,6 +181,7 @@ class DisjointSet<E> {
          * @return boolean
          */
 
+        @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
         @Override
         public boolean equals(final Object o) {
             return id.equals(o);

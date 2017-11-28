@@ -1,6 +1,8 @@
 package data_structures.graphs;
 
-@SuppressWarnings("WeakerAccess")
+import java.text.MessageFormat;
+
+@SuppressWarnings("ALL")
 public class Node<I extends Comparable<I>, V> {
 
     protected final I id;
@@ -21,9 +23,11 @@ public class Node<I extends Comparable<I>, V> {
 
     @Override
     public String toString() {
-        return super.toString();
+        return MessageFormat
+                .format("Node< {0} -> {1}>", id.toString(), value.toString());
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(final Object o) {
         return id.equals(o);
