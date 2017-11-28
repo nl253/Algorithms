@@ -5,7 +5,7 @@ adjacency matrix."""
 from functools import reduce
 from itertools import chain
 from pprint import pformat
-from typing import Dict, Hashable, Iterable, List, Optional, Set, Tuple, TypeVar
+from typing import Dict, Hashable, Iterable, List, Optional, Set, Tuple, TypeVar, SupportsInt
 
 # 3rd Party
 import numpy as np
@@ -25,7 +25,7 @@ class DenseGraph(Graph):
 
         # map from Node to an integer for faster operations on the matrix
         # (which needs int indecies anyway)
-        self.map: Dict[Label, int] = dict()
+        self.map: Dict[Label, SupportsInt] = dict()
 
         counter = 0
 
@@ -94,7 +94,7 @@ class DenseGraph(Graph):
 
 # run only if run as script
 if __name__ == "__main__":
-    low: int = 50
-    high: int = 9999
+    low: SupportsInt = 50
+    high: SupportsInt = 9999
     x: DenseGraph = DenseGraph(np.random.randint(low, high, size=(high, 2)))
     print(x)

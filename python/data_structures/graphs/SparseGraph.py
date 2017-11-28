@@ -33,18 +33,9 @@ class WeightedEdge(NamedTuple):
 Label = TypeVar('Label', Hashable, Hashable)
 PayLoad = TypeVar('PayLoad')
 Edge = Tuple[Label, Label]
-#  =======
-#  Node = TypeVar('Node', Hashable, Hashable)
-#  WeightedNode = Tuple[Node, int]
-#  PayLoad = TypeVar('PayLoad')
-#  Edge = Tuple[Node, Node]
-#  WeightedEdge = Tuple[Node, int, Node]
-#  >>>>>>> 7d1f0eb0c99bc1df302b021da2f2d4119d2ebdc1
-
 
 # noinspection PyUnreachableCode
 class SparseGraph(Graph):
-<<<<<<< HEAD
 
     def __init__(self):
         self.adj_dict: Dict[Node, Set[Node]] = dict()
@@ -137,8 +128,9 @@ class SparseGraph(Graph):
 
                 for edge in unvisited_edges:
 
-    def path(self, start: Label, dest: Label, unvisited=None,
-             visited: Set[Label] = set()) -> Optional[Sequence[Label]]:
+                    pass
+
+    def path(self, start: Label, dest: Label, unvisited=None, visited: Set[Label] = set()) -> Optional[Sequence[Label]]:
         if edge[0] == trail[-1]:
             visited_edges.add(trail[-1])
             trail.append(unvisited_edges.pop())

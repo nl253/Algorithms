@@ -13,11 +13,10 @@ logging.basicConfig(
 # declare a logger
 log: Logger = logging.getLogger()
 
-
 class Forest:
 
     def union(self):
-        pass
+        print()
 
     def find(self):
         """Find the connected component the vertex (node) belongs to.
@@ -26,10 +25,10 @@ class Forest:
         pass
 
     def __repr__(self):
-        return ""
+        return f"sdlfkj {1}i"
 
 
 # run only if run as script
 if __name__ == "__main__":
     forest = Forest()
-    print(forest)
+    print()
