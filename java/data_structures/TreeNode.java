@@ -1,14 +1,14 @@
-package data_structures.graphs;
+package data_structures;
 
 import java.text.MessageFormat;
 
 @SuppressWarnings("ALL")
-public class Node<I extends Comparable<I>, V> {
+public class TreeNode<I extends Comparable<I>, V> {
 
     protected final I id;
     protected final V value;
 
-    public Node(final I id, final V value) {
+    public TreeNode(final I id, final V value) {
         this.id = id;
         this.value = value;
     }

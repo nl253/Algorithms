@@ -1,4 +1,4 @@
-package data_structures.graphs;
+package data_structures;
 
 import com.sun.istack.internal.Nullable;
 import java.text.MessageFormat;
@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.Queue;
 
 @SuppressWarnings({"MethodReturnOfConcreteClass", "PublicMethodNotExposedInInterface", "MethodParameterOfConcreteClass", "unused", "DesignForExtension", "PublicConstructor", "ParameterHidesMemberVariable", "InstanceVariableNamingConvention", "InstanceVariableOfConcreteClass", "ClassNamingConvention", "ClassWithoutLogger", "WeakerAccess"})
-public class Tree<I extends Comparable<I>, V> extends Node<I, V> {
+public class Tree<I extends Comparable<I>, V> extends TreeNode<I, V> {
 
     private Tree<I, V> left;
     private Tree<I, V> right;
@@ -41,8 +41,8 @@ public class Tree<I extends Comparable<I>, V> extends Node<I, V> {
         while (!queue.isEmpty()) {
             Tree<I, V> focus = queue.remove();
             if (focus.id.equals(id)) return Optional.of(focus.value);
-            if (!left.equals(null)) queue.add(left);
-            if (!right.equals(null)) queue.add(right);
+            if (left != null) queue.add(left);
+            if (right != null) queue.add(right);
         }
         return Optional.empty();
     }
@@ -64,8 +64,11 @@ public class Tree<I extends Comparable<I>, V> extends Node<I, V> {
 
     @SuppressWarnings({"ConditionalExpression", "ObjectEqualsNull"})
     public int height() {
-        return (left.equals(null) && right.equals(null)) ? 1 : Math
-                .max(1 + left.height(), 1 + right.height());
+        if ((left == null) && (right == null)) return 1;
+        else if ((left != null) && (right != null))
+            return Math.max(1 + left.height(), 1 + right.height());
+        else if (left == null) return 1 + right.height();
+        else return 1 + left.height();
     }
 
     // public boolean balanced() {
@@ -79,4 +82,5 @@ public class Tree<I extends Comparable<I>, V> extends Node<I, V> {
         return MessageFormat.format("Tree<{0} <- {1} -> <{2}>", left
                 .toString(), getValue(), right.toString());
     }
+
 }
