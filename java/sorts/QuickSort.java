@@ -10,12 +10,14 @@ final class QuickSort extends SortingAlgorithm<Integer> {
         sort(list, 0, list.size() - 1);
     }
 
+    @SuppressWarnings("LocalCanBeFinal")
     private static void sort(List<Integer> unsortedList, final int left, final int right) {
         final int pivot = partition(unsortedList, left, right);
         sort(unsortedList, left, pivot - 1);
         sort(unsortedList, pivot, right);
     }
 
+    @SuppressWarnings({"MethodWithMultipleLoops", "LocalCanBeFinal", "MethodCallInLoopCondition", "AssignmentToMethodParameter"})
     private static int partition(List<Integer> unsortedList, int left, int right) {
 
         final int pivot = (unsortedList.size() / 2) + left;
