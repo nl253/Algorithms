@@ -5,6 +5,21 @@ import java.util.ArrayDeque;
 import java.util.Optional;
 import java.util.Queue;
 
+/**
+ * Unless specified otherwise all comments are quotations from
+ * https://en.wikipedia.org/wiki/Binary_tree
+ * <p>
+ * A binary tree is a tree data structure in which each node has at most two
+ * children, which are referred to as the left child and the right child. A
+ * recursive definition using just set theory notions is that a (non-empty)
+ * binary tree is a triple (L, S, R), where L and R are binary trees or the
+ * empty set and S is a singleton set.[1] Some authors allow the binary tree to
+ * be the empty set as well.
+ *
+ * @param <I>
+ * @param <V>
+ */
+
 @SuppressWarnings({"MethodReturnOfConcreteClass", "PublicMethodNotExposedInInterface", "MethodParameterOfConcreteClass", "unused", "DesignForExtension", "PublicConstructor", "ParameterHidesMemberVariable", "InstanceVariableNamingConvention", "InstanceVariableOfConcreteClass", "ClassNamingConvention", "ClassWithoutLogger", "WeakerAccess", "InstanceVariableMayNotBeInitialized"})
 public class BinaryTree<I extends Comparable<I>, V> extends Node<I, V> {
 
@@ -15,22 +30,39 @@ public class BinaryTree<I extends Comparable<I>, V> extends Node<I, V> {
         super(id, value);
     }
 
+    /**
+     * @return the right node wrapped in an Optional.
+     */
+
     public Optional<BinaryTree<I, V>> getLeft() {
         return Optional.of(left);
     }
 
     /**
-     * @return the right node.
+     * @return the right node wrapped in an Optional.
      */
 
     public Optional<BinaryTree<I, V>> getRight() {
         return Optional.of(right);
     }
 
+
+    /**
+     * Setter for the right BinaryTree.
+     *
+     * @param newRight the new right node
+     */
+
     @SuppressWarnings({"LocalCanBeFinal", "ParameterHidesMemberVariable"})
     public void setRight(BinaryTree<I, V> newRight) {
         right = newRight;
     }
+
+    /**
+     * Setter for the left BinaryTree.
+     *
+     * @param newLeft the new left node
+     */
 
     @SuppressWarnings("ParameterHidesMemberVariable")
     public void setLeft(final BinaryTree<I, V> newLeft) {
