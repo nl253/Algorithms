@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.Queue;
 
 /**
- * Unless specified otherwise all comments are quotations from
+ * From now on, unless specified otherwise, all comments are quotations from
  * https://en.wikipedia.org/wiki/Binary_tree
  * <p>
  * A binary tree is a tree data structure in which each node has at most two

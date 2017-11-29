@@ -1,7 +1,7 @@
 package data_structures.trees;
 
 /**
- * Unless specified otherwise all comments are direct quotations from
+ * From now on, unless specified otherwise, all comments are direct quotations from
  * https://en.wikipedia.org/wiki/Binary_search_tree
  * <p>
  * Binary search trees (BST), sometimes called ordered or sorted binary trees,
