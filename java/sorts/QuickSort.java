@@ -3,7 +3,7 @@ package sorts;
 import java.util.List;
 
 @SuppressWarnings({"UtilityClassCanBeEnum", "LocalVariableOfConcreteClass", "AccessingNonPublicFieldOfAnotherObject"})
-final class QuickSort extends SortingAlgorithm<Integer> {
+final class QuickSort<E extends Comparable<E>> extends SortingAlgorithm<E> {
 
     @Override
     void sort() {
@@ -11,14 +11,14 @@ final class QuickSort extends SortingAlgorithm<Integer> {
     }
 
     @SuppressWarnings("LocalCanBeFinal")
-    private static void sort(List<Integer> unsortedList, final int left, final int right) {
+    private static <E extends Comparable<E>> void sort(List<E> unsortedList, final int left, final int right) {
         final int pivot = partition(unsortedList, left, right);
         sort(unsortedList, left, pivot - 1);
         sort(unsortedList, pivot, right);
     }
 
     @SuppressWarnings({"MethodWithMultipleLoops", "LocalCanBeFinal", "MethodCallInLoopCondition", "AssignmentToMethodParameter"})
-    private static int partition(List<Integer> unsortedList, int left, int right) {
+    private static <E extends Comparable<E>> int partition(List<E> unsortedList, int left, int right) {
 
         final int pivot = (unsortedList.size() / 2) + left;
 
@@ -26,13 +26,15 @@ final class QuickSort extends SortingAlgorithm<Integer> {
         while (left < right) {
 
             // increment the pointer if already sorted, stop if not
-            while (unsortedList.get(left) <= unsortedList.get(pivot)) left++;
+            while (unsortedList.get(left)
+                    .compareTo(unsortedList.get(pivot)) == -1) left++;
 
-            while (unsortedList.get(right) > unsortedList.get(pivot)) right--;
+            while (unsortedList.get(right)
+                    .compareTo(unsortedList.get(pivot)) == 1) right--;
 
             // swap
             if (left < right) {
-                final int tmp = unsortedList.get(left);
+                final E tmp = unsortedList.get(left);
                 unsortedList.set(left, unsortedList.get(right));
                 unsortedList.set(right, tmp);
             }
@@ -41,7 +43,7 @@ final class QuickSort extends SortingAlgorithm<Integer> {
     }
 
     @SuppressWarnings("LocalCanBeFinal")
-    public static <E extends Comparable<E>> void main(String... args) {
+    public static void main(String... args) {
         QuickSort quickSort = new QuickSort();
         quickSort.sort();
         quickSort.test();

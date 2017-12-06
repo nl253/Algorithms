@@ -2,11 +2,11 @@ package data_structures;
 
 import java.text.MessageFormat;
 
-@SuppressWarnings("ALL")
+@SuppressWarnings({"WeakerAccess", "EqualsAndHashcode", "DesignForExtension", "PublicMethodNotExposedInInterface"})
 public class TreeNode<I extends Comparable<I>, V> {
 
-    protected final I id;
-    protected final V value;
+    private final I id;
+    private final V value;
 
     public TreeNode(final I id, final V value) {
         this.id = id;

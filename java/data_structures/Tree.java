@@ -40,7 +40,7 @@ public class Tree<I extends Comparable<I>, V> extends TreeNode<I, V> {
 
         while (!queue.isEmpty()) {
             Tree<I, V> focus = queue.remove();
-            if (focus.id.equals(id)) return Optional.of(focus.value);
+            if (focus.getId().equals(id)) return Optional.of(focus.getValue());
             if (left != null) queue.add(left);
             if (right != null) queue.add(right);
         }
