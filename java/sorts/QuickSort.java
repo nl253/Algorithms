@@ -1,52 +1,78 @@
 package sorts;
 
-import java.util.List;
+/**
+ * All content in javadocs, unless specified otherwise, is from https://en.wikipedia.org/wiki/Quicksort.
+ * <p>
+ * Quicksort (sometimes called partition-exchange sort) is an efficient sorting algorithm, serving
+ * as a systematic method for placing the elements of an array in order
+ * <p>
+ * Quicksort is a comparison sort, meaning that it can sort items of any type for which a "less-than" relation (formally, a total order) is defined.
+ * In efficient implementations it is not a stable sort, meaning that the relative order of equal sort items is not preserved.
+ * Quicksort can operate in-place on an array, requiring small additional amounts of memory to perform the sorting.
+ * <p>
+ * Mathematical analysis of quicksort shows that, on average, the algorithm takes O(n log n) comparisons to sort n items.
+ * In the worst case, it makes O(n2) comparisons, though this behavior is rare.
+ *
+ * @param <E>
+ */
 
 @SuppressWarnings({"UtilityClassCanBeEnum", "LocalVariableOfConcreteClass", "AccessingNonPublicFieldOfAnotherObject"})
-final class QuickSort<E extends Comparable<E>> extends SortingAlgorithm<E> {
+final class QuickSort<E extends Comparable<E>> extends BaseSortingAlgorithm<E> {
 
     @Override
-    void sort() {
-        sort(list, 0, list.size() - 1);
+    void sort() { sort(0, list.size() - 1);}
+
+    /**
+     * @param left left boundary
+     * @param right right boundary
+     */
+
+    private void sort(final int left, final int right) {
+        if (left < right) {
+            final int pivotIndex = partition(left, right);
+            sort(left, pivotIndex - 1);
+            sort(pivotIndex + 1, right);
+        }
     }
 
-    @SuppressWarnings("LocalCanBeFinal")
-    private static <E extends Comparable<E>> void sort(List<E> unsortedList, final int left, final int right) {
-        final int pivot = partition(unsortedList, left, right);
-        sort(unsortedList, left, pivot - 1);
-        sort(unsortedList, pivot, right);
-    }
+    /**
+     * @param left the left boundary
+     * @param right the right boundary
+     * @return the pivot
+     */
 
-    @SuppressWarnings({"MethodWithMultipleLoops", "LocalCanBeFinal", "MethodCallInLoopCondition", "AssignmentToMethodParameter"})
-    private static <E extends Comparable<E>> int partition(List<E> unsortedList, int left, int right) {
+    @SuppressWarnings({"MethodWithMultipleLoops", "LocalCanBeFinal", "MethodCallInLoopCondition", "AssignmentToMethodParameter", "ProhibitedExceptionThrown", "NewExceptionWithoutArguments"})
+    private int partition(int left, int right) {
 
-        final int pivot = (unsortedList.size() / 2) + left;
+        final int pivotIndex = (right / 2) + left;
 
         // the bounds are inclusive
         while (left < right) {
 
             // increment the pointer if already sorted, stop if not
-            while (unsortedList.get(left)
-                    .compareTo(unsortedList.get(pivot)) == -1) left++;
+            while (list.get(left).compareTo(list.get(pivotIndex)) == -1) left++;
 
-            while (unsortedList.get(right)
-                    .compareTo(unsortedList.get(pivot)) == 1) right--;
+            while (list.get(right).compareTo(list.get(pivotIndex)) == 1)
+                right--;
 
             // swap
             if (left < right) {
-                final E tmp = unsortedList.get(left);
-                unsortedList.set(left, unsortedList.get(right));
-                unsortedList.set(right, tmp);
+                final E tmp = list.get(left);
+                list.set(left, list.get(right));
+                list.set(right, tmp);
+                // prevent getting stuck when left and right pointer point to the same value
+                left++;
+                right--;
             }
         }
-        return left;
+        return pivotIndex;
     }
 
-    @SuppressWarnings("LocalCanBeFinal")
-    public static void main(String... args) {
-        QuickSort quickSort = new QuickSort();
+    public static void main(final String... args) {
+        final QuickSort<Integer> quickSort = new QuickSort<>();
         quickSort.sort();
         quickSort.test();
+        quickSort.print();
     }
 }
 // vim:ft=java:sw=2:ts=2:foldmethod=marker:foldmarker={,}:

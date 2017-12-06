@@ -21,7 +21,7 @@ import java.util.Queue;
  */
 
 @SuppressWarnings({"MethodReturnOfConcreteClass", "PublicMethodNotExposedInInterface", "MethodParameterOfConcreteClass", "unused", "DesignForExtension", "PublicConstructor", "ParameterHidesMemberVariable", "InstanceVariableNamingConvention", "InstanceVariableOfConcreteClass", "ClassNamingConvention", "ClassWithoutLogger", "WeakerAccess", "InstanceVariableMayNotBeInitialized"})
-public class BinaryTree<I extends Comparable<I>, V> extends Node<I, V> {
+public class BinaryTree<I extends Comparable<I>, V> extends KeyValPair<I, V> {
 
     private BinaryTree<I, V> left;
     private BinaryTree<I, V> right;
@@ -103,7 +103,7 @@ public class BinaryTree<I extends Comparable<I>, V> extends Node<I, V> {
 
     @SuppressWarnings("MethodWithMultipleReturnPoints")
     public Optional<V> getDepthFirstSearch(final I id) {
-        if (this.id.equals(id)) return Optional.of(value);
+        if (getId().equals(id)) return getValue();
 
         final Optional<V> vLeft = left.getDepthFirstSearch(id);
         final Optional<V> vRight = right.getDepthFirstSearch(id);

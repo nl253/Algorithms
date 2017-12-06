@@ -5,6 +5,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author norbert
+ */
+
 @SuppressWarnings({"ParameterHidesMemberVariable", "InstanceVariableNamingConvention", "ClassNamingConvention", "FieldNotUsedInToString", "unused", "ClassWithoutLogger", "AssignmentToCollectionOrArrayFieldFromParameter", "DesignForExtension", "PublicMethodNotExposedInInterface", "WeakerAccess"})
 public class Node<E> {
 
@@ -16,13 +20,6 @@ public class Node<E> {
         this.neighbours = new HashSet<>(neighbours);
         this.id = id;
     }
-
-    // public Node(final E id, final Collection<E> neighbours) {
-    //     this.neighbours = new HashSet<>();
-    //     neighbours.stream()
-    //             .forEach(x -> this.neighbours.add(new Node<>(x)));
-    //     this.id = id;
-    // }
 
     @SuppressWarnings({"PublicConstructor", "ImplicitCallToSuper", "CollectionWithoutInitialCapacity"})
     public Node(final E id) {
@@ -51,4 +48,5 @@ public class Node<E> {
     public String toString() {
         return MessageFormat.format("Node<{0}>", id.toString());
     }
+
 }

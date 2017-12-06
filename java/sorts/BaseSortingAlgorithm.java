@@ -2,80 +2,88 @@ package sorts;
 
 import java.text.MessageFormat;
 import java.time.Clock;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
-import java.util.stream.Stream.Builder;
 
-@SuppressWarnings({"ClassHasNoToStringMethod", "AbstractClassWithOnlyOneDirectInheritor", "AbstractClassNeverImplemented"})
+/**
+ * Base class for all sorting algorithms, defines the <code>void sort()</code>
+ * method that needs to be implemented and provides utility functions.
+ *
+ * @param <E>
+ */
+
+@SuppressWarnings({"ClassHasNoToStringMethod", "AbstractClassWithOnlyOneDirectInheritor", "AbstractClassNeverImplemented", "ProtectedField", "PackageVisibleField", "NestedAssignment", "UnsecureRandomNumberGeneration", "unchecked", "RedundantTypeArguments"})
 abstract class BaseSortingAlgorithm<E extends Comparable<E>> {
 
-    private static final long RAND_LIST_LEN = 100L;
-    @SuppressWarnings({"FieldMayBeFinal", "WeakerAccess", "ProtectedField"})
-    protected List<E> list;
-    @SuppressWarnings({"StaticVariableNamingConvention", "ConstantNamingConvention", "WeakerAccess"})
-    protected static final Logger log = Logger.getAnonymousLogger();
+    @SuppressWarnings("FieldNamingConvention")
+    private final Logger log = Logger.getAnonymousLogger();
 
-    @SuppressWarnings("AssignmentOrReturnOfFieldWithMutableType")
-    BaseSortingAlgorithm(final List<E> unsortedList) {
-        list = unsortedList;
-    }
+    private static final long RAND_LIST_LEN = 10L;
 
-    @SuppressWarnings("LocalCanBeFinal")
-    BaseSortingAlgorithm() {
-        list = randomList();
-    }
+    List<E> list = (List<E>) new Random(Clock.systemUTC().millis())
+            .ints(RAND_LIST_LEN).boxed()
+            .collect(LinkedList<Integer>::new, LinkedList<Integer>::add, LinkedList<Integer>::addAll);
+
+    /**
+     * The method that sorting algorithms need to implement.
+     */
 
     abstract void sort();
 
-    @SuppressWarnings({"rawtypes", "UseOfSystemOutOrSystemErr", "unchecked", "ResultOfMethodCallIgnored"})
-    static <E extends Comparable<E>> void print(final Collection<E> sortedList) {
-        print(sortedList.stream());
-    }
+    /**
+     * Prints sorted list.
+     */
 
     @SuppressWarnings({"rawtypes", "UseOfSystemOutOrSystemErr", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess"})
-    static <E extends Comparable<E>> void print(final Stream<E> sortedList) {
-        System.out.println(MessageFormat
-                                   .format("[{0}]", sortedList.map(E::toString)
-                                           .collect(String::new, (String x, String y) -> MessageFormat
-                                                   .format("{0}, {1}", x, y), String::join)));
+    final void print() {
+        System.out.println(MessageFormat.format("[{0}]", list.stream()
+                .map(E::toString)
+                .collect(String::new, (String x, String y) -> MessageFormat
+                        .format("{0}, {1}", x, y), String::join)));
     }
 
-    @SuppressWarnings({"rawtypes", "UseOfSystemOutOrSystemErr", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess"})
-    static <E extends Comparable<E>> void print(final Iterable<E> sortedList) {
-        final Builder<E> builder = Stream.builder();
-        sortedList.forEach(builder::add);
-        print(builder.build());
-    }
+    /**
+     * Test if sorted properly - iterate from the first element onwards,
+     * make sure each next element is larger than the previous one.
+     */
 
-    @SuppressWarnings({"AssertStatement", "AssertionCanBeIf", "MethodCallInLoopCondition", "Convert2streamapi", "ComparatorResultComparison", "WeakerAccess"})
-    protected static <E extends Comparable<E>> void test(final List<E> unsortedList) {
-        for (int i = 0; i < unsortedList.size(); i++)
-            assert unsortedList.get(i)
-                    .compareTo(unsortedList.get(i - 1)) == -1 : MessageFormat
-                    .format("[ERROR] badly sorted in {0}. Element {1} should be larger than {2} but it isn't", unsortedList
-                            .getClass().getName(), unsortedList
-                                    .get(i), unsortedList.get(i - 1));
+    @SuppressWarnings({"AssertStatement", "AssertionCanBeIf", "MethodCallInLoopCondition", "Convert2streamapi", "ComparatorResultComparison", "WeakerAccess", "LawOfDemeter"})
+    protected final void test() {
+        for (int i = 1; i < list.size(); i++)
+            assert list.get(i).compareTo(list.get(i - 1)) == -1 : MessageFormat
+                    .format("[ERROR] badly sorted in {0}. Element {1} should be larger than {2} but it isn't", list
+                            .getClass().getName(), list.get(i), list
+                                    .get(i - 1));
+
         log.info("The sort was successful");
     }
 
-    @SuppressWarnings({"TypeParameterHidesVisibleType", "DesignForExtension"})
-    <E extends Comparable<E>> void test() {
-        test(list);
+    /**
+     * Utility method, generate a {@link List} of random {@link Integer}s.
+     *
+     * @param lenght lenght of the random list
+     * @return {@link List} of random {@link Integer}s
+     */
+
+    @SuppressWarnings({"UnsecureRandomNumberGeneration", "WeakerAccess", "SameParameterValue", "RedundantTypeArguments", "SpellCheckingInspection", "DesignForExtension"})
+    void setRandomList(final long lenght) {
+        list = (List<E>) new Random(Clock.systemUTC().millis()).ints(lenght)
+                .boxed()
+                .collect(ArrayList<Integer>::new, ArrayList<Integer>::add, ArrayList<Integer>::addAll);
     }
 
-    @SuppressWarnings({"UnsecureRandomNumberGeneration", "WeakerAccess", "SameParameterValue", "RedundantTypeArguments", "SpellCheckingInspection"})
-    static <E extends Comparable<E>> List<E> randomList(final long lenght) {
-        return new Random(Clock.systemUTC().millis()).ints(lenght).boxed()
-                .collect(LinkedList<E>::new, List::add, List<E>::addAll);
-    }
+    /**
+     * A version or randomList with supplied arguments.
+     *
+     * @return {@link List} of random {@link Integer}s
+     */
 
-    @SuppressWarnings({"UnsecureRandomNumberGeneration", "WeakerAccess"})
-    static <E extends Comparable<E>> List<E> randomList() {
-        return randomList(RAND_LIST_LEN);
+    @SuppressWarnings({"UnsecureRandomNumberGeneration", "WeakerAccess", "DesignForExtension"})
+    void setRandomList() {
+        setRandomList(RAND_LIST_LEN);
     }
 }
 
