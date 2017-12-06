@@ -1,5 +1,9 @@
 package sorts;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * All content in javadocs, unless specified otherwise, is from https://en.wikipedia.org/wiki/Quicksort.
  * <p>
@@ -18,6 +22,10 @@ package sorts;
 
 @SuppressWarnings({"UtilityClassCanBeEnum", "LocalVariableOfConcreteClass", "AccessingNonPublicFieldOfAnotherObject"})
 final class QuickSort<E extends Comparable<E>> extends BaseSortingAlgorithm<E> {
+
+    /**
+     * Implementation of the compulsory {@code void sort()} method.
+     */
 
     @Override
     void sort() { sort(0, list.size() - 1);}
@@ -41,30 +49,15 @@ final class QuickSort<E extends Comparable<E>> extends BaseSortingAlgorithm<E> {
      * @return the pivot
      */
 
-    @SuppressWarnings({"MethodWithMultipleLoops", "LocalCanBeFinal", "MethodCallInLoopCondition", "AssignmentToMethodParameter", "ProhibitedExceptionThrown", "NewExceptionWithoutArguments"})
-    private int partition(int left, int right) {
-
-        final int pivotIndex = (right / 2) + left;
-
-        // the bounds are inclusive
-        while (left < right) {
-
-            // increment the pointer if already sorted, stop if not
-            while (list.get(left).compareTo(list.get(pivotIndex)) == -1) left++;
-
-            while (list.get(right).compareTo(list.get(pivotIndex)) == 1)
-                right--;
-
-            // swap
-            if (left < right) {
-                final E tmp = list.get(left);
-                list.set(left, list.get(right));
-                list.set(right, tmp);
-                // prevent getting stuck when left and right pointer point to the same value
-                left++;
-                right--;
-            }
-        }
+    @SuppressWarnings({"AssignmentToMethodParameter", "ForLoopWithMissingComponent"})
+    private int partition(int left, final int right) {
+        final int pivotIndex = (right - left) / 2;
+        final E pivot = list.get(pivotIndex);
+        final List<E> sublist = list.subList(left, right + 1);
+        final List<E> result = Stream.concat(sublist.stream().filter(x -> x
+                .compareTo(pivot) <= -1), sublist.stream().filter(x -> x
+                .compareTo(pivot) >= 0)).collect(Collectors.toList());
+        for (; left <= right; left++) list.set(left, result.get(left));
         return pivotIndex;
     }
 

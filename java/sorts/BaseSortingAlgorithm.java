@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 /**
- * Base class for all sorting algorithms, defines the <code>void sort()</code>
+ * Base class for all sorting algorithms, defines the {@code void sort()}
  * method that needs to be implemented and provides utility functions.
  *
  * @param <E>
