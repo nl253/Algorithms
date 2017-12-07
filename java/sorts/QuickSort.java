@@ -54,9 +54,7 @@ final class QuickSort<E extends Comparable<E>> extends BaseSortingAlgorithm<E> {
         final int pivotIndex = (right - left) / 2;
         final E pivot = list.get(pivotIndex);
         final List<E> sublist = list.subList(left, right + 1);
-        final List<E> result = Stream.concat(sublist.stream().filter(x -> x
-                .compareTo(pivot) <= -1), sublist.stream().filter(x -> x
-                .compareTo(pivot) >= 0)).collect(Collectors.toList());
+        final List<E> result = Stream.concat(sublist.stream().filter(x -> x .compareTo(pivot) <= -1), sublist.stream().filter(x -> x .compareTo(pivot) >= 0)).collect(Collectors.toList());
         for (; left <= right; left++) list.set(left, result.get(left));
         return pivotIndex;
     }

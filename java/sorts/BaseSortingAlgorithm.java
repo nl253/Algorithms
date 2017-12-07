@@ -46,7 +46,7 @@ abstract class BaseSortingAlgorithm<E extends Comparable<E>> {
     }
 
     /**
-     * Test if sorted properly - iterate from the first element onwards,
+     * Shortcuts if sorted properly - iterate from the first element onwards,
      * make sure each next element is larger than the previous one.
      */
 
