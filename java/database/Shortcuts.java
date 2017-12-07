@@ -1,17 +1,24 @@
 package database;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 
 /**
  * @author nl253
  */
 
-@SuppressWarnings({"NewClassNamingConvention", "CallToDriverManagerGetConnection", "CallToSystemExit", "CallToPrintStackTrace", "JDBCResourceOpenedButNotSafelyClosed", "JDBCExecuteWithNonConstantString", "StaticVariableUsedBeforeInitialization", "StaticVariableMayNotBeInitialized", "UtilityClassCanBeEnum", "FieldNamingConvention", "MethodWithMultipleReturnPoints", "SameParameterValue"})
+@SuppressWarnings({"NewClassNamingConvention", "CallToDriverManagerGetConnection", "CallToSystemExit", "CallToPrintStackTrace", "JDBCResourceOpenedButNotSafelyClosed", "JDBCExecuteWithNonConstantString", "StaticVariableUsedBeforeInitialization", "StaticVariableMayNotBeInitialized", "UtilityClassCanBeEnum", "FieldNamingConvention", "MethodWithMultipleReturnPoints", "SameParameterValue", "UseOfSystemOutOrSystemErr"})
 public final class Shortcuts {
 
-    private static final String PROTOCOL = "jdbc:sqlite:";
-    private static final String DATABASE = String.format("%sdatabase.sqlite3", PROTOCOL);
+    private static final String PROTOCOL = "jdbc:";
+    private static final String DBTYPE = "sqlite";
+    private static final String DATABASE = "database.sqlite3";
+    private static final String URI = String
+            .format("%s:%s:%s", PROTOCOL, DBTYPE, DATABASE);
     private static boolean connected;
     private static Statement statement;
     private static Connection connection;
@@ -39,12 +46,12 @@ public final class Shortcuts {
      */
 
     @SuppressWarnings("CallToPrintStackTrace")
-    private static void connect() throws SQLException {
-        if (!connected) try (Connection connection = DriverManager
-                .getConnection(DATABASE)) {
-            Shortcuts.connection = connection;
+    private static void connect() {
+        if (!connected) try {
+            connection = DriverManager.getConnection(URI);
             statement = connection.createStatement();
-        }
+            connected = true;
+        } catch (final SQLException ignored) {}
     }
 
     public static boolean isConnected() {
