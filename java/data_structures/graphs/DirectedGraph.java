@@ -1,14 +1,6 @@
 package data_structures.graphs;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings({"WeakerAccess", "DesignForExtension", "AssignmentToCollectionOrArrayFieldFromParameter", "unused", "ParameterHidesMemberVariable", "PublicMethodNotExposedInInterface", "InstanceVariableMayNotBeInitialized", "InstanceVariableNamingConvention", "ClassNamingConvention", "PublicConstructor", "ClassWithoutLogger", "FieldNotUsedInToString", "MethodReturnOfConcreteClass", "ImplicitCallToSuper", "NonBooleanMethodNameMayNotStartWithQuestion", "UnusedReturnValue", "CallToSuspiciousStringMethod", "AbstractClassNeverImplemented", "AbstractClassWithoutAbstractMethods"})
 abstract class DirectedGraph {
@@ -69,13 +61,12 @@ abstract class DirectedGraph {
      */
 
     @SuppressWarnings("rawtypes")
-    DirectedGraph addNode(final String node) {
+    void addNode(final String node) {
         if (!nodeTable.keySet().contains(node)) {
             nodeTable.put(node, new HashMap<>(nodeTable.size() + 1));
             nodeTable.forEach((String key, Map dict) -> nodeTable.get(node)
                     .put(key, -1));
         }
-        return this;
     }
 
     /**
@@ -86,10 +77,9 @@ abstract class DirectedGraph {
      */
 
     @SuppressWarnings("rawtypes")
-    DirectedGraph removeNode(final String node) {
+    void removeNode(final String node) {
         nodeTable.remove(node);
         nodeTable.forEach((String key, Map dict) -> dict.remove(node));
-        return this;
     }
 
     /**
@@ -103,11 +93,10 @@ abstract class DirectedGraph {
      */
 
     @SuppressWarnings("SameParameterValue")
-    DirectedGraph connect(final String nodeA, final String nodeB, final int cost) {
+    void connect(final String nodeA, final String nodeB, final int cost) {
         if (!nodeTable.containsKey(nodeA)) addNode(nodeA);
         if (!nodeTable.containsKey(nodeB)) addNode(nodeA);
         nodeTable.get(nodeA).put(nodeB, cost);
-        return this;
     }
 
     /**
@@ -118,9 +107,8 @@ abstract class DirectedGraph {
      * @return the graph itself
      */
 
-    DirectedGraph connect(final String nodeA, final String nodeB) {
+    void connect(final String nodeA, final String nodeB) {
         connect(nodeA, nodeB, 1);
-        return this;
     }
 
     @Override
