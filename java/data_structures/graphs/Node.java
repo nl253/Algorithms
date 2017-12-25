@@ -4,12 +4,13 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author norbert
  */
 
-@SuppressWarnings({"ParameterHidesMemberVariable", "InstanceVariableNamingConvention", "ClassNamingConvention", "FieldNotUsedInToString", "unused", "ClassWithoutLogger", "AssignmentToCollectionOrArrayFieldFromParameter", "DesignForExtension", "PublicMethodNotExposedInInterface", "WeakerAccess"})
+@SuppressWarnings({"ParameterHidesMemberVariable", "InstanceVariableNamingConvention", "ClassNamingConvention", "FieldNotUsedInToString", "unused", "ClassWithoutLogger", "AssignmentToCollectionOrArrayFieldFromParameter", "DesignForExtension", "PublicMethodNotExposedInInterface", "WeakerAccess", "LocalVariableOfConcreteClass", "AccessingNonPublicFieldOfAnotherObject"})
 public class Node<E> {
 
     private Set<Node<E>> neighbours;
@@ -44,9 +45,29 @@ public class Node<E> {
         this.neighbours = neighbours;
     }
 
+    @SuppressWarnings({"ConditionalExpression", "NonFinalFieldReferenceInEquals"})
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if ((o == null) || (getClass() != o.getClass())) return false;
+
+        final Node<?> node = (Node<?>) o;
+
+        return (id != null) ? id.equals(node.id) : (node.id == null);
+    }
+
+    @SuppressWarnings({"ConditionalExpression", "NonFinalFieldReferencedInHashCode"})
+    @Override
+    public int hashCode() {
+        return (id != null) ? id.hashCode() : 0;
+    }
+
     @Override
     public String toString() {
-        return MessageFormat.format("Node<{0}>", id.toString());
+        return MessageFormat
+                .format("{0}<{1}>", id.toString(), neighbours.stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(", ")));
     }
 
 }

@@ -127,7 +127,7 @@ abstract class DirectedGraph {
     @Override
     public String toString() {
         return MessageFormat.format("Graph<{0}>", nodeTable.keySet().stream()
-                .collect(Collectors.joining(", ")));
+                .map(Object::toString).collect(Collectors.joining(", ")));
     }
 
     /**
