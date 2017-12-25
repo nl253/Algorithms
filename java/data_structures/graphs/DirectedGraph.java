@@ -124,15 +124,15 @@ abstract class DirectedGraph {
     }
 
     /**
-     * Use the Dijkstra's algoright to compute the shortest route from a to b.
+     * Use the Dijkstra's algorithm to compute the shortest route from a to b.
      *
      * @param start the first node
      * @param end the second node
-     * @return Optionally an Iterable of Strings if such a route exists, an
-     * empty Optional otherwise
+     * @return Optionally an {@link Iterable} of {@link String}s if such a Route exists, an
+     * empty {@link Optional} otherwise
      */
 
-    @SuppressWarnings({"DiamondCanBeReplacedWithExplicitTypeArguments", "CollectionWithoutInitialCapacity", "LocalCanBeFinal", "MethodWithMultipleReturnPoints", "LocalVariableOfConcreteClass", "MethodCallInLoopCondition"})
+    @SuppressWarnings({"DiamondCanBeReplacedWithExplicitTypeArguments", "CollectionWithoutInitialCapacity", "LocalCanBeFinal", "MethodWithMultipleReturnPoints", "LocalVariableOfConcreteClass", "MethodCallInLoopCondition", "ObjectAllocationInLoop", "SuspiciousMethodCalls"})
     Optional<Iterable<String>> shortestRoute(final String start, final String end) {
 
         /**
@@ -144,7 +144,7 @@ abstract class DirectedGraph {
         class Route implements Comparable<Route> {
 
             public static final int DEFAULT_PATH_LEN = 20;
-            List<String> path;
+            final List<String> path;
             Integer distance;
 
             Route(final Iterable<String> nodes, final int distance) {
@@ -153,9 +153,10 @@ abstract class DirectedGraph {
                 this.distance = distance;
             }
 
-            Route(final String firstComponent, final int distance) {
+            Route(final String firstComponent) {
                 this();
                 path.add(firstComponent);
+                distance = nodeTable.get(start).get(firstComponent);
             }
 
             Route() {
@@ -168,28 +169,30 @@ abstract class DirectedGraph {
                 return distance.compareTo(t.distance);
             }
 
+            @SuppressWarnings("NonFinalFieldReferencedInHashCode")
+            @Override
+            public int hashCode() {
+                int result = path.hashCode();
+                result = (31 * result) + distance.hashCode();
+                return result;
+            }
+
             @SuppressWarnings({"ConditionalExpression", "NonFinalFieldReferenceInEquals"})
             @Override
             public boolean equals(final Object o) {
                 return (o instanceof Integer) ? (distance == o) : distance
                         .equals(o);
             }
-
-            @Override
-            public int hashCode() {
-                int result = path.hashCode();
-                result = (distance != null) ? ((31 * result) + distance
-                        .hashCode()) : ((31 * result));
-                return result;
-            }
         }
+
 
         // @formatter:off
         final Queue<Route> unvisited = new PriorityQueue<>();
 
-        nodeTable.get(start).keySet()
+        nodeTable.get(start)
+                .keySet()
                 .stream()
-                .map(x -> new Route(x, nodeTable.get(start).get(x)))
+                .map(Route::new)
                 .forEach(unvisited::add);
 
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
