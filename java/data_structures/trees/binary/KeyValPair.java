@@ -1,4 +1,4 @@
-package data_structures.trees;
+package data_structures.trees.binary;
 
 import java.text.MessageFormat;
 import java.util.Objects;

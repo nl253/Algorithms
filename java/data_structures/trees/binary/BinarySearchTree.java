@@ -1,4 +1,4 @@
-package data_structures.trees;
+package data_structures.trees.binary;
 
 /**
  * From now on, unless specified otherwise, all comments are direct quotations from
