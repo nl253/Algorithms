@@ -10,10 +10,13 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
+ * Application of the Trie data structure.
+ * Here it allows to find matching words that share given prefix in O(log(n)) time which is slightly better than running a linear search on a {@link java.util.Collection} of {@link String}s.
+ *
  * @author norbert
  */
 
-@SuppressWarnings({"OptionalContainsCollection", "ClassNamePrefixedWithPackageName", "NonBooleanMethodNameMayNotStartWithQuestion", "TooBroadScope", "MismatchedQueryAndUpdateOfCollection", "LocalVariableOfConcreteClass", "AccessingNonPublicFieldOfAnotherObject"})
+@SuppressWarnings({"OptionalContainsCollection", "ClassNamePrefixedWithPackageName", "NonBooleanMethodNameMayNotStartWithQuestion", "TooBroadScope", "MismatchedQueryAndUpdateOfCollection", "LocalVariableOfConcreteClass", "AccessingNonPublicFieldOfAnotherObject", "AlibabaAvoidCommentBehindStatement"})
 final class WordCompletionTrie {
 
     private Map<String, WordCompletionTrie> nodes;
@@ -33,14 +36,21 @@ final class WordCompletionTrie {
         words.forEach(this::add);
     }
 
+    /**
+     * Add a word to the completion system.
+     *
+     * @param wordToComplete a {@link String} - word to complete
+     */
+
     @SuppressWarnings({"ReturnOfNull", "OverlyLongLambda", "LocalVariableHidesMemberVariable"})
-    public void add(final String s) {
+    public void add(final String wordToComplete) {
         if (nodes == null) nodes = new HashMap<>(10);
 
-        if (!s.isEmpty()) {
+        if (!wordToComplete.isEmpty()) {
 
-            final String firstChar = Character.toString(s.charAt(0));
-            final String tail = s.substring(1);
+            final String firstChar = Character
+                    .toString(wordToComplete.charAt(0));
+            final String tail = wordToComplete.substring(1);
             final boolean word = tail.isEmpty();
 
             nodes.putIfAbsent(firstChar, new WordCompletionTrie(word));
@@ -49,11 +59,24 @@ final class WordCompletionTrie {
         }
     }
 
-    @SuppressWarnings("Convert2Diamond")
-    public Set<String> gatherCandidates(final String word) {
-        return findNode(word).map(WordCompletionTrie::words).get().stream()
-                .map((String x) -> word + x).collect(Collectors.toSet());
+    /**
+     * The core of {@link WordCompletionTrie}. Produce a {@link Set} of {@link String}s that have the prefix.
+     *
+     * @param prefix
+     * @return {@link Set} of {@link String}s that have the prefix.
+     */
+
+    // @formatter:off
+    @SuppressWarnings({"Convert2Diamond", "ConstantConditions"})
+    public Set<String> gatherCandidates(final String prefix) {
+        return findNode(prefix)
+                .map(WordCompletionTrie::words)
+                .get() // unwrap Optional to Set<String>
+                .stream()
+                .map((String x) -> prefix + x)
+                .collect(Collectors.toSet());
     }
+    // @formatter:on
 
     private Optional<WordCompletionTrie> findNode(final String path) {
         if (path.isEmpty()) return Optional.of(this);
@@ -62,6 +85,12 @@ final class WordCompletionTrie {
                     .findNode(path.substring(1));
         else return Optional.empty();
     }
+
+    /**
+     * Produce all words that can be formed from this node recursively.
+     *
+     * @return words that can be formed from this node recursively
+     */
 
     @SuppressWarnings({"unchecked", "ConditionalExpression"})
     public Set<String> words() {
