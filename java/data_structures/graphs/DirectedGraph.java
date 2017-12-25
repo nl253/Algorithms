@@ -185,15 +185,13 @@ abstract class DirectedGraph {
             }
         }
 
-
         // @formatter:off
-        final Queue<Route> unvisited = new PriorityQueue<>();
-
-        nodeTable.get(start)
+        @SuppressWarnings("RedundantTypeArguments")
+        final Queue<Route> unvisited = nodeTable.get(start)
                 .keySet()
                 .stream()
                 .map(Route::new)
-                .forEach(unvisited::add);
+                .collect(PriorityQueue<Route>::new, PriorityQueue<Route>::add, PriorityQueue<Route>::addAll);
 
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         final Map<String, Integer> visited = new HashMap<>(100);
