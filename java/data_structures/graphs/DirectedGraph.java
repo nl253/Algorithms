@@ -1,6 +1,13 @@
 package data_structures.graphs;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 @SuppressWarnings({"WeakerAccess", "DesignForExtension", "AssignmentToCollectionOrArrayFieldFromParameter", "unused", "ParameterHidesMemberVariable", "PublicMethodNotExposedInInterface", "InstanceVariableMayNotBeInitialized", "InstanceVariableNamingConvention", "ClassNamingConvention", "PublicConstructor", "ClassWithoutLogger", "FieldNotUsedInToString", "MethodReturnOfConcreteClass", "ImplicitCallToSuper", "NonBooleanMethodNameMayNotStartWithQuestion", "UnusedReturnValue", "CallToSuspiciousStringMethod", "AbstractClassNeverImplemented", "AbstractClassWithoutAbstractMethods"})
 abstract class DirectedGraph {
@@ -134,34 +141,31 @@ abstract class DirectedGraph {
          */
 
         @SuppressWarnings({"PackageVisibleField", "LimitedScopeInnerClass", "ClassHasNoToStringMethod", "ComparableImplementedButEqualsNotOverridden", "ReturnOfInnerClass"})
-        class Route implements Comparable<Integer> {
+        class Route implements Comparable<Route> {
 
-            List<String> nodes;
+            public static final int DEFAULT_PATH_LEN = 20;
+            List<String> path;
             Integer distance;
 
-            Route(final List<String> nodes, final int distance) {
-                this.nodes = nodes;
+            Route(final Iterable<String> nodes, final int distance) {
+                this();
+                nodes.forEach(path::add);
                 this.distance = distance;
             }
 
+            Route(final String firstComponent, final int distance) {
+                this();
+                path.add(firstComponent);
+            }
+
             Route() {
-                nodes = new LinkedList<>();
-            }
-
-            boolean dest(String destination) {
-                return nodes.get(nodes.size() - 1).equals(destination);
-            }
-
-            Route extend(String pathComponent, int cost) {
-                nodes.add(pathComponent);
-                distance += cost;
-                return this;
+                path = new ArrayList<>(DEFAULT_PATH_LEN);
             }
 
             @SuppressWarnings("CompareToUsesNonFinalVariable")
             @Override
-            public int compareTo(final Integer t) {
-                return distance.compareTo(t);
+            public int compareTo(final Route t) {
+                return distance.compareTo(t.distance);
             }
 
             @SuppressWarnings({"ConditionalExpression", "NonFinalFieldReferenceInEquals"})
@@ -170,21 +174,47 @@ abstract class DirectedGraph {
                 return (o instanceof Integer) ? (distance == o) : distance
                         .equals(o);
             }
+
+            @Override
+            public int hashCode() {
+                int result = path.hashCode();
+                result = (distance != null) ? ((31 * result) + distance
+                        .hashCode()) : ((31 * result));
+                return result;
+            }
         }
 
-        Queue<Route> heap = new PriorityQueue<>();
+        // @formatter:off
+        final Queue<Route> unvisited = new PriorityQueue<>();
 
-        Set<String> visited = new HashSet<>();
-        Set<String> unvisited = new HashSet<>(nodeTable.keySet());
+        nodeTable.get(start).keySet()
+                .stream()
+                .map(x -> new Route(x, nodeTable.get(start).get(x)))
+                .forEach(unvisited::add);
 
-        @SuppressWarnings("TooBroadScope") Route focus;
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        final Map<String, Integer> visited = new HashMap<>(100);
 
-        while (!heap.isEmpty()) {
+        while (!unvisited.isEmpty()) {
 
-            focus = heap.remove();
+            final Route focus = unvisited.poll();
+            final String lastComponent = focus.path.get(focus.path.size() - 1);
 
+            if (lastComponent.equals(end))
+                return Optional.of(focus.path);
+
+            if (!visited.containsKey(focus) || (visited.get(lastComponent) > focus.distance))
+                visited.put(lastComponent, focus.distance);
+
+            // @formatter:on
+            nodeTable.get(lastComponent).keySet().forEach((String x) -> {
+                final List<String> path = new LinkedList<>(focus.path);
+                path.add(x);
+                unvisited.add(new Route(path, focus.distance + nodeTable
+                        .get(lastComponent).get(x)));
+            });
         }
-
+        // the path could not be found
         return Optional.empty();
     }
 }
