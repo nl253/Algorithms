@@ -3,8 +3,8 @@ package cryptography.ciphers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings({"ClassHasNoToStringMethod", "FeatureEnvy", "CallToSuspiciousStringMethod"})
-class BaseCipherTest {
+@SuppressWarnings({"ClassHasNoToStringMethod", "FeatureEnvy", "CallToSuspiciousStringMethod", "AbstractClassWithOnlyOneDirectInheritor"})
+abstract class BaseCipherTest {
 
     @SuppressWarnings("PackageVisibleField")
     BaseCipher cipher;

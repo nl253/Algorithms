@@ -1,6 +1,8 @@
 package data_structures.trees.trie;
 
+import com.github.javafaker.Cat;
 import com.github.javafaker.Faker;
+import com.github.javafaker.GameOfThrones;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,7 +15,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("ClassHasNoToStringMethod")
-class WordCompletionTrieTest {
+final class WordCompletionTrieTest {
 
     private static final int INITIAL_WORDS = 10000;
     private WordCompletionTrie trie;
@@ -23,24 +25,27 @@ class WordCompletionTrieTest {
 
     @SuppressWarnings("OverlyLongLambda")
     @org.junit.jupiter.api.BeforeEach
-    final void setUp() {
+    void setUp() {
 
         // fake data generator
         final Faker faker = new Faker(new Locale("en-GB"));
+        final GameOfThrones got = faker.gameOfThrones();
+        final Cat cat = faker.cat();
+
         final Collection<String> words = new HashSet<>(400);
 
         IntStream.range(0, INITIAL_WORDS).forEach((int x) -> {
-            words.add(faker.gameOfThrones().dragon());
-            words.add(faker.gameOfThrones().city());
-            words.add(faker.cat().breed());
-            words.add(faker.gameOfThrones().house());
+            words.add(got.dragon());
+            words.add(got.city());
+            words.add(cat.breed());
+            words.add(got.house());
         });
 
         trie = new WordCompletionTrie(words);
     }
 
     @Test
-    final void gatherCandidates() {
+    void gatherCandidates() {
         final String query = "Bri";
         final Set<String> candidates = trie.gatherCandidates(query);
 
@@ -65,7 +70,7 @@ class WordCompletionTrieTest {
 
 
     @Test
-    final void words() {
+    void words() {
         Assertions.assertFalse(trie.words()
                                        .isEmpty(), "words could not be generated");
         // log.warning(trie.words().stream().collect(Collectors.joining(", ")));

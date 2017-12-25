@@ -36,13 +36,17 @@ final class WordCompletionTrie {
         words.forEach(this::add);
     }
 
+    void remove(final String word) {
+        findNode(word).ifPresent((WordCompletionTrie x) -> x.word = false);
+    }
+
     /**
      * Add a word to the completion system.
      *
      * @param wordToComplete a {@link String} - word to complete
      */
 
-    @SuppressWarnings({"ReturnOfNull", "OverlyLongLambda", "LocalVariableHidesMemberVariable"})
+    @SuppressWarnings({"ReturnOfNull", "OverlyLongLambda", "LocalVariableHidesMemberVariable", "WeakerAccess"})
     public void add(final String wordToComplete) {
         if (nodes == null) nodes = new HashMap<>(10);
 
