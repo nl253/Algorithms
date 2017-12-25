@@ -1,5 +1,6 @@
 package data_structures.graphs;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -8,8 +9,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
-@SuppressWarnings({"WeakerAccess", "DesignForExtension", "AssignmentToCollectionOrArrayFieldFromParameter", "unused", "ParameterHidesMemberVariable", "PublicMethodNotExposedInInterface", "InstanceVariableMayNotBeInitialized", "InstanceVariableNamingConvention", "ClassNamingConvention", "PublicConstructor", "ClassWithoutLogger", "FieldNotUsedInToString", "MethodReturnOfConcreteClass", "ImplicitCallToSuper", "NonBooleanMethodNameMayNotStartWithQuestion", "UnusedReturnValue", "CallToSuspiciousStringMethod", "AbstractClassNeverImplemented", "AbstractClassWithoutAbstractMethods"})
+@SuppressWarnings({"WeakerAccess", "DesignForExtension", "AssignmentToCollectionOrArrayFieldFromParameter", "unused", "ParameterHidesMemberVariable", "PublicMethodNotExposedInInterface", "InstanceVariableMayNotBeInitialized", "InstanceVariableNamingConvention", "ClassNamingConvention", "PublicConstructor", "ClassWithoutLogger", "FieldNotUsedInToString", "MethodReturnOfConcreteClass", "ImplicitCallToSuper", "NonBooleanMethodNameMayNotStartWithQuestion", "UnusedReturnValue", "CallToSuspiciousStringMethod", "AbstractClassNeverImplemented", "AbstractClassWithoutAbstractMethods", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 abstract class DirectedGraph {
 
     /**
@@ -32,7 +34,7 @@ abstract class DirectedGraph {
      */
 
     DirectedGraph(final Iterable<String> initialNodes) {
-        initialNodes.forEach(this::addNode);
+        initialNodes.forEach(this::add);
     }
 
     /**
@@ -57,7 +59,8 @@ abstract class DirectedGraph {
     Optional<Integer> getCost(final String nodeA, final String nodeB) {
         if (!nodeTable.containsKey(nodeA) || !nodeTable.containsKey(nodeB))
             return Optional.empty();
-        return Optional.of(nodeTable.get(nodeA).get(nodeB));
+
+        return Optional.of(nodeTable.get(nodeA).getOrDefault(nodeB, -1));
     }
 
     /**
@@ -68,11 +71,11 @@ abstract class DirectedGraph {
      */
 
     @SuppressWarnings("rawtypes")
-    void addNode(final String node) {
+    void add(final String node) {
         if (!nodeTable.keySet().contains(node)) {
             nodeTable.put(node, new HashMap<>(nodeTable.size() + 1));
-            nodeTable.forEach((String key, Map dict) -> nodeTable.get(node)
-                    .put(key, -1));
+            // the distance from any node to itself is 0
+            nodeTable.get(node).put(node, 0);
         }
     }
 
@@ -84,9 +87,12 @@ abstract class DirectedGraph {
      */
 
     @SuppressWarnings("rawtypes")
-    void removeNode(final String node) {
-        nodeTable.remove(node);
-        nodeTable.forEach((String key, Map dict) -> dict.remove(node));
+    void remove(final String node) {
+        if (nodeTable.containsKey(node)) nodeTable.remove(node);
+
+        nodeTable.values().stream()
+                .filter((Map<String, Integer> x) -> x.containsKey(node))
+                .forEach((Map<String, Integer> x) -> x.remove(node));
     }
 
     /**
@@ -101,8 +107,8 @@ abstract class DirectedGraph {
 
     @SuppressWarnings("SameParameterValue")
     void connect(final String nodeA, final String nodeB, final int cost) {
-        if (!nodeTable.containsKey(nodeA)) addNode(nodeA);
-        if (!nodeTable.containsKey(nodeB)) addNode(nodeA);
+        if (!nodeTable.containsKey(nodeA)) add(nodeA);
+        if (!nodeTable.containsKey(nodeB)) add(nodeB);
         nodeTable.get(nodeA).put(nodeB, cost);
     }
 
@@ -120,7 +126,8 @@ abstract class DirectedGraph {
 
     @Override
     public String toString() {
-        return "Graph<>";
+        return MessageFormat.format("Graph<{0}>", nodeTable.keySet().stream()
+                .collect(Collectors.joining(", ")));
     }
 
     /**
