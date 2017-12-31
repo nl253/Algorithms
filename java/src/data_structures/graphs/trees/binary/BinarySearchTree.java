@@ -41,7 +41,7 @@ class BinarySearchTree<I extends Comparable<I>, V> extends BinaryTree<I, V> {
      * Call the parent constructor.
      *
      * @param id identifier that is Comparable
-     * @param value object you want to store in the Node
+     * @param value object you want to store in the MultiNode
      */
 
     @SuppressWarnings("WeakerAccess")

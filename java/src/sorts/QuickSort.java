@@ -1,4 +1,4 @@
-package src.sorts;
+package sorts;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,18 +28,21 @@ final class QuickSort<E extends Comparable<E>> extends BaseSortingAlgorithm<E> {
      */
 
     @Override
-    void sort() { sort(0, list.size() - 1);}
+    List<E> sort(final List<E> data) {
+        sort(0, data.size() - 1, data);
+        return data;
+    }
 
     /**
      * @param left left boundary
      * @param right right boundary
      */
 
-    private void sort(final int left, final int right) {
+    private void sort(final int left, final int right, final List<E> data) {
         if (left < right) {
-            final int pivotIndex = partition(left, right);
-            sort(left, pivotIndex - 1);
-            sort(pivotIndex + 1, right);
+            final int pivotIndex = partition(left, right, data);
+            sort(left, pivotIndex - 1, data);
+            sort(pivotIndex + 1, right, data);
         }
     }
 
@@ -50,22 +53,15 @@ final class QuickSort<E extends Comparable<E>> extends BaseSortingAlgorithm<E> {
      */
 
     @SuppressWarnings({"AssignmentToMethodParameter", "ForLoopWithMissingComponent"})
-    private int partition(int left, final int right) {
+    private int partition(int left, final int right, final List<E> data) {
         final int pivotIndex = (right - left) / 2;
-        final E pivot = list.get(pivotIndex);
-        final List<E> sublist = list.subList(left, right + 1);
+        final E pivot = data.get(pivotIndex);
+        final List<E> sublist = data.subList(left, right + 1);
         final List<E> result = Stream.concat(sublist.stream().filter(x -> x
                 .compareTo(pivot) <= -1), sublist.stream().filter(x -> x
                 .compareTo(pivot) >= 0)).collect(Collectors.toList());
-        for (; left <= right; left++) list.set(left, result.get(left));
+        for (; left <= right; left++) data.set(left, result.get(left));
         return pivotIndex;
-    }
-
-    public static void main(final String... args) {
-        final QuickSort<Integer> quickSort = new QuickSort<>();
-        quickSort.sort();
-        quickSort.test();
-        quickSort.print();
     }
 }
 // vim:ft=java:sw=2:ts=2:foldmethod=marker:foldmarker={,}:

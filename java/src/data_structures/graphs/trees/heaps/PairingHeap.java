@@ -1,6 +1,7 @@
 package data_structures.graphs.trees.heaps;
 
 import com.google.common.collect.Streams;
+import data_structures.graphs.Node;
 import data_structures.graphs.trees.Tree;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -11,18 +12,17 @@ import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import src.data_structures.graphs.trees.AbstractTree;
 
 /**
  * @author nl253
  */
 
 @SuppressWarnings({"StandardVariableNames", "ClassWithTooManyMethods", "LocalVariableHidesMemberVariable", "unchecked", "AccessingNonPublicFieldOfAnotherObject", "LocalVariableOfConcreteClass", "MethodWithMoreThanThreeNegations", "OverlyComplexMethod", "SwitchStatement", "OverloadedVarargsMethod", "QuestionableName", "UnclearExpression"})
-public final class PairingHeap<E extends Comparable<E>> extends AbstractHeap<E> implements Comparable<PairingHeap<E>> {
+public final class PairingHeap<E extends Comparable<E>> implements Heap<E>, Comparable<PairingHeap<E>> {
 
-    private SortedSet<AbstractHeap<E>> children;
+    private SortedSet<Heap<E>> children;
 
-    public PairingHeap(final Iterable<E> items) {
+    public PairingHeap(final Collection<E> items) {
         final Iterator<E> iterator = items.iterator();
         setPayload(iterator.next());
         iterator.forEachRemaining(this::add);
@@ -37,7 +37,7 @@ public final class PairingHeap<E extends Comparable<E>> extends AbstractHeap<E> 
         setPayload(payload);
     }
 
-    private PairingHeap(final E payload, final Iterable<PairingHeap<E>> children) {
+    private PairingHeap(final E payload, final Collection<PairingHeap<E>> children) {
         this(payload);
         this.children = new TreeSet<>();
         children.forEach(this.children::add);
@@ -72,7 +72,7 @@ public final class PairingHeap<E extends Comparable<E>> extends AbstractHeap<E> 
         return Arrays.stream(heaps).reduce(PairingHeap::merge).get();
     }
 
-    private static <E extends Comparable<E>> PairingHeap<E> merge(final Iterable<PairingHeap<E>> heaps) {
+    private static <E extends Comparable<E>> PairingHeap<E> merge(final Collection<PairingHeap<E>> heaps) {
         return Streams.stream(heaps).reduce(PairingHeap::merge).get();
     }
 
@@ -83,17 +83,55 @@ public final class PairingHeap<E extends Comparable<E>> extends AbstractHeap<E> 
      * @param children {@link AbstractTree} nodes
      */
     @SuppressWarnings("PublicMethodNotExposedInInterface")
-    @Override
-    public void setChildren(final Iterable<? extends Tree> children) {
+    public void setChildren(final Collection<Tree> children) {
         this.children.clear();
-        children.forEach(e -> this.children.add((AbstractHeap<E>) e));
+        children.forEach(e -> this.children.add((Heap<E>) e));
 
     }
 
     @SuppressWarnings("PublicMethodNotExposedInInterface")
     @Override
-    public Optional<? extends Collection<? extends Tree>> getChildren() {
+    public Optional<Collection<Tree>> getChildren() {
         return Optional.ofNullable(children);
+    }
+
+    @Override
+    public void setChildren(final Collection<Tree<E>> children) {
+
+    }
+
+    /**
+     * Make a connection between two nodes. If they don't already exist, add
+     * them.
+     *
+     * @param a the first node
+     * @param b the second node
+     * @param cost the cost of going from the first to the second node
+     * @return the graph itself
+     */
+    @Override
+    public void connect(final E a, final E b, final int cost) {
+
+    }
+
+    @Override
+    public void disconnect(final E a, final E b) {
+
+    }
+
+    @Override
+    public void eject(final E node) {
+
+    }
+
+    @Override
+    public int getCost(final E start, final E dest) {
+        return 0;
+    }
+
+    @Override
+    public int getOrder() {
+        return 0;
     }
 
     /**
@@ -107,6 +145,16 @@ public final class PairingHeap<E extends Comparable<E>> extends AbstractHeap<E> 
         children = newRoot.children;
         setOrder(newRoot.getOrder());
         setPayload(newRoot.getPayload().orElse(null));
+    }
+
+    @Override
+    public int setCost(final int cost) {
+        return 0;
+    }
+
+    @Override
+    public Collection<E> getAdjecentNodes(final E node) {
+        return null;
     }
 
     /**
@@ -154,6 +202,26 @@ public final class PairingHeap<E extends Comparable<E>> extends AbstractHeap<E> 
     @Override
     public int compareTo(final PairingHeap<E> t) {
         return 0;
+    }
+
+    @Override
+    public Optional<E> findMin() {
+        return Optional.empty();
+    }
+
+    @Override
+    public E getId() {
+        return ;
+    }
+
+    @Override
+    public void setId(final E id) {
+
+    }
+
+    @Override
+    public Collection<Node<E>> getAdjecentNodes() {
+        return null;
     }
 }
 

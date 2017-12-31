@@ -31,7 +31,7 @@ public class KeyValPair<I extends Comparable<I>, V> {
     @SuppressWarnings({"ConditionalExpression", "DesignForExtension"})
     @Override
     public String toString() {
-        return MessageFormat.format("Node<{0} -> {1}>", getId().isPresent() ? id
+        return MessageFormat.format("MultiNode<{0} -> {1}>", getId().isPresent() ? id
                 .toString() : "", getValue().isPresent() ? value
                 .toString() : "");
     }

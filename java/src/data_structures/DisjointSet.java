@@ -64,8 +64,8 @@ class DisjointSet<E> {
      * @param items you want to insert
      */
 
-    private void makeSet(Iterable<E> items) {
-        items.forEach(x -> elements.add(new Element<>(x)));
+    private void makeSet(Collection<E> items) {
+        items.stream().map(Element::new).forEach(elements::add);
     }
 
     /**

@@ -1,9 +1,15 @@
-package src.data_structures.graphs.trees.binary;
+package data_structures.graphs.trees.binary;
 
+import data_structures.graphs.Node;
+import data_structures.graphs.trees.BinaryNode;
+import data_structures.graphs.trees.Tree;
 import java.text.MessageFormat;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * From now on, unless specified otherwise, all comments are quotations from
@@ -16,58 +22,18 @@ import java.util.Queue;
  * empty set and S is a singleton set.[1] Some authors allow the binary tree to
  * be the empty set as well.
  *
- * @param <I>
- * @param <V>
+ * @param <E>
  * @author nl253
  */
 
-@SuppressWarnings({"MethodReturnOfConcreteClass", "PublicMethodNotExposedInInterface", "MethodParameterOfConcreteClass", "unused", "DesignForExtension", "PublicConstructor", "ParameterHidesMemberVariable", "InstanceVariableNamingConvention", "InstanceVariableOfConcreteClass", "ClassNamingConvention", "ClassWithoutLogger", "WeakerAccess", "InstanceVariableMayNotBeInitialized", "ClassNamePrefixedWithPackageName"})
-public class BinaryTree<I extends Comparable<I>, V> extends KeyValPair<I, V> {
+@SuppressWarnings({"MethodReturnOfConcreteClass", "PublicMethodNotExposedInInterface", "MethodParameterOfConcreteClass", "unused", "DesignForExtension", "PublicConstructor", "ParameterHidesMemberVariable", "InstanceVariableNamingConvention", "InstanceVariableOfConcreteClass", "ClassNamingConvention", "ClassWithoutLogger", "WeakerAccess", "InstanceVariableMayNotBeInitialized", "ClassNamePrefixedWithPackageName", "ClassWithTooManyMethods"})
+public class BinaryTree<E extends Comparable<E>> implements data_structures.graphs.trees.BinaryNode<E>, Tree<E> {
 
-    private BinaryTree<I, V> left;
-    private BinaryTree<I, V> right;
+    private BinaryTree<E> left;
+    private BinaryTree<E> right;
 
-    public BinaryTree(final I id, final V value) {
-        super(id, value);
-    }
-
-    /**
-     * @return the right node wrapped in an Optional.
-     */
-
-    public Optional<BinaryTree<I, V>> getLeft() {
-        return Optional.of(left);
-    }
-
-    /**
-     * @return the right node wrapped in an Optional.
-     */
-
-    public Optional<BinaryTree<I, V>> getRight() {
-        return Optional.of(right);
-    }
-
-
-    /**
-     * Setter for the right BinaryTree.
-     *
-     * @param newRight the new right node
-     */
-
-    @SuppressWarnings({"LocalCanBeFinal", "ParameterHidesMemberVariable"})
-    public void setRight(BinaryTree<I, V> newRight) {
-        right = newRight;
-    }
-
-    /**
-     * Setter for the left BinaryTree.
-     *
-     * @param newLeft the new left node
-     */
-
-    @SuppressWarnings("ParameterHidesMemberVariable")
-    public void setLeft(final BinaryTree<I, V> newLeft) {
-        left = newLeft;
+    public BinaryTree(final E data) {
+        super(data);
     }
 
     /**
@@ -80,15 +46,19 @@ public class BinaryTree<I extends Comparable<I>, V> extends KeyValPair<I, V> {
      */
 
     @SuppressWarnings({"LocalVariableOfConcreteClass", "MethodCallInLoopCondition", "AccessingNonPublicFieldOfAnotherObject", "DesignForExtension", "LocalCanBeFinal", "ParameterHidesMemberVariable", "InstanceMethodNamingConvention", "MethodWithMultipleReturnPoints", "MultiplyOrDivideByPowerOfTwo", "LawOfDemeter", "ConstantConditions", "EqualsReplaceableByObjectsCall"})
-    public Optional<V> getBreadthFirstSearch(final I id) {
-        Queue<BinaryTree<I, V>> queue = new ArrayDeque<>(getHeight() * 2);
+    public Optional<BinaryTree<E>> getBreadthFirstSearch(final E id) {
+
+        final Queue<BinaryTree<E>> queue = new ArrayDeque<>(getOrder() + 10);
+
         queue.add(this);
 
         while (!queue.isEmpty()) {
-            BinaryTree<I, V> focus = queue.remove();
-            if (focus.getId().get().equals(id)) return focus.getValue();
-            getLeft().ifPresent(queue::add);
-            getRight().ifPresent(queue::add);
+            final BinaryTree<E> focus = queue.remove();
+            if (focus.getId().equals(id)) return Optional.ofNullable(focus);
+            getLeft().ifPresent((BinaryNode<E> x) -> queue
+                    .add(((BinaryTree<E>) x)));
+            getRight().ifPresent((BinaryNode<E> x) -> queue
+                    .add(((BinaryTree<E>) x)));
         }
         return Optional.empty();
     }
@@ -102,28 +72,22 @@ public class BinaryTree<I extends Comparable<I>, V> extends KeyValPair<I, V> {
      * @return The value
      */
 
-    @SuppressWarnings("MethodWithMultipleReturnPoints")
-    public Optional<V> getDepthFirstSearch(final I id) {
-        if (getId().equals(id)) return getValue();
-
-        final Optional<V> vLeft = left.getDepthFirstSearch(id);
-        final Optional<V> vRight = right.getDepthFirstSearch(id);
-
-        //noinspection ConditionalExpression
-        return vLeft.isPresent() ? vLeft : vRight;
-    }
-
-    /**
-     * Return the height of the list.
-     *
-     * @return height of the tree
-     */
-
-    @SuppressWarnings({"ConditionalExpression", "IfStatementWithTooManyBranches", "MethodWithMultipleReturnPoints"})
-    public int getHeight() {
-        return Math.max(getLeft().isPresent() ? (1 + left
-                .getHeight()) : 1, getRight().isPresent() ? (1 + right
-                .getHeight()) : 1);
+    @SuppressWarnings({"MethodWithMultipleReturnPoints", "SwitchStatementWithoutDefaultBranch", "SwitchStatement"})
+    public Optional<BinaryTree<E>> getDepthFirstSearch(final E id) {
+        switch (getId().compareTo(id)) {
+            case (-1):
+                final Optional<BinaryNode<E>> maybeLeft = getLeft();
+                return maybeLeft
+                        .flatMap(eBinaryNode -> ((BinaryTree<E>) (eBinaryNode))
+                                .getDepthFirstSearch(id));
+            case 1:
+                final Optional<BinaryNode<E>> maybeRight = getRight();
+                return maybeRight
+                        .flatMap(eBinaryNode -> ((BinaryTree<E>) (eBinaryNode))
+                                .getDepthFirstSearch(id));
+            default:
+                return Optional.of(this);
+        }
     }
 
     /**
@@ -135,10 +99,113 @@ public class BinaryTree<I extends Comparable<I>, V> extends KeyValPair<I, V> {
     @SuppressWarnings("ConditionalExpression")
     @Override
     public String toString() {
-        return MessageFormat.format("BinaryTree<{0} <- {1} -> <{2}>", getLeft()
-                                                                              .isPresent() ? left
-                                                                              .toString() : "", getValue(), getRight()
-                                                                                                                    .isPresent() ? right
-                                                                                                                    .toString() : "");
+        // @formatter:off
+        return MessageFormat.format("{0}<{1}>",
+                                    getClass().getName(),
+                                    getChildren().isEmpty()? "" :
+                                    getChildren().stream()
+                                            .map(Object::toString)
+                                            .collect(Collectors.joining(
+                                                    ", ")));
+        // @formatter:on
+    }
+
+    @Override
+    public Optional<BinaryNode<E>> getLeft() {
+        return Optional.empty();
+    }
+
+    @Override
+    public void setLeft() {
+
+    }
+
+    @Override
+    public Optional<BinaryNode<E>> getRight() {
+        return Optional.empty();
+    }
+
+    @Override
+    public void setRight(final BinaryNode<E> node) {
+
+    }
+
+    @Override
+    public Collection<Tree<E>> getChildren() {
+        return null;
+    }
+
+    @Override
+    public void setChildren(final Collection<Tree<E>> children) {
+
+    }
+
+    /**
+     * Make a connection between two nodes. If they don't already exist, add
+     * them.
+     *
+     * @param a the first node
+     * @param b the second node
+     * @param cost the cost of going from the first to the second node
+     * @return the graph itself
+     */
+    @Override
+    public void connect(final E a, final E b, final int cost) {
+
+    }
+
+    @Override
+    public void disconnect(final E a, final E b) {
+
+    }
+
+    @Override
+    public void eject(final E node) {
+
+    }
+
+    @Override
+    public int getCost(final E start, final E dest) {
+        return 0;
+    }
+
+    @Override
+    public int getOrder() {
+        return 0;
+    }
+
+    @Override
+    public void insert(final E node) {
+
+    }
+
+    @Override
+    public int setCost(final int cost) {
+        return 0;
+    }
+
+    @Override
+    public Collection<E> getAdjecentNodes(final E node) {
+        return null;
+    }
+
+    @Override
+    public E getId() {
+        return null;
+    }
+
+    @Override
+    public void setId(final E id) {
+
+    }
+
+    @Override
+    public Collection<Node<E>> getAdjecentNodes() {
+        return null;
+    }
+
+    @Override
+    public int compareTo(@NotNull final Node<E> eNode) {
+        return 0;
     }
 }

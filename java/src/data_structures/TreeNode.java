@@ -24,7 +24,7 @@ public class TreeNode<I extends Comparable<I>, V> {
     @Override
     public String toString() {
         return MessageFormat
-                .format("Node< {0} -> {1}>", id.toString(), value.toString());
+                .format("MultiNode< {0} -> {1}>", id.toString(), value.toString());
     }
 
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")

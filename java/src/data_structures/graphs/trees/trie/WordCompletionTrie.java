@@ -1,4 +1,4 @@
-package src.data_structures.graphs.trees.trie;
+package data_structures.graphs.trees.trie;
 
 import java.text.MessageFormat;
 import java.util.HashMap;

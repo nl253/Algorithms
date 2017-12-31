@@ -1,0 +1,91 @@
+@startuml
+
+class DisjointSet {
+    + union()
+    + find()
+    + void makeSet()
+    - boolean isRoot()
+}
+
+class WordCompletionTrie {
+    - WordCompletionTrie findNode(String word)
+    + Set<String> gatherCandidates(String word)
+    + void remove(String word)
+    + void add(String word)
+    + Set<String> getWords()
+}
+
+interface Comparable<E> {
+    + int compareTo(E object)
+}
+
+interface Node<E extends Comparable<E>> extends Comparable {
+   - E data
+   + E getData()
+}
+
+interface BiNode<E extends Comparable<E>> extends Node {
+   - BiNode left
+   - BiNode right
+   + BiNode getLeft()
+   + BiNode getRight()
+}
+
+class Edge<E extends Comparable<E>> {
+    # Node<E> a
+    # Node<E> b
+    # int cost
+}
+
+interface Graph<E extends Comparable<E>> {
+    - int order
+    + int getOrder()
+    + void connect(E nodeA, E nodeB)
+}
+
+interface AdjecancyList<E extends Comparable<E>> {
+    + Set<Edge> getEdges()
+    + void addEdge(E nodeA, E nodeB)
+    + void addEdge(E nodeA, E nodeB, int cost)
+}
+
+interface WeightedGraph<E extends Comparable<E>> extends Graph {
+    + int cost(E nodeA, E nodeB)
+}
+
+class BinaryTree<E extends Comparable<E>> implements Tree, BiNode {
+    - BinaryTree find(E id)
+}
+
+interface Tree<E extends Comparable<E>> {
+    # Tree<E> {static} merge(Tree<E> a, Tree<E> b)
+    # void merge(Tree<E> tree)
+    + int getHeight()
+    + int getOrder()
+}
+
+interface Heap<E extends Comparable<E>> extends Tree {
+    + E getMin()
+    + int getOrder()
+}
+
+class DirectedDenseGraph<E extends Comparable<E>> implements WeightedGraph {
+    - Map<E, Map<E, Integer>> lookupTable
+    + List<E> shortestRoute(E start, E dest)
+}
+
+class Matrix {
+    {static} + Optional<Integer> determinant()
+    {static} + Optional<Matrix> matrixMult()
+    {static} - Optional<Matrix> inverse()
+    {static} - boolean canMult()
+    {static} - boolean isSquare()
+}
+
+Heap <|-- PriorityQueue
+Heap <|-- PairingHeap
+AdjecancyList <|-- DirectedDenseGraph
+AdjecancyList -up-- Edge
+
+@enduml
+

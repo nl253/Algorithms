@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 final class WordCompletionTrieTest {
 
     private static final int INITIAL_WORDS = 10000;
-    private src.data_structures.graphs.trees.trie.WordCompletionTrie trie;
+    private WordCompletionTrie trie;
 
     /** Logger for the class */
     private static final Logger log = Logger.getAnonymousLogger();
@@ -41,7 +41,7 @@ final class WordCompletionTrieTest {
             words.add(got.house());
         });
 
-        trie = new src.data_structures.graphs.trees.trie.WordCompletionTrie(words);
+        trie = new WordCompletionTrie(words);
     }
 
     @Test

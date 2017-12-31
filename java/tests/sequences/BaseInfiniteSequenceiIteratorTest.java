@@ -7,27 +7,36 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings({"ClassHasNoToStringMethod", "AbstractClassWithOnlyOneDirectInheritor"})
-abstract class BaseInfiniteSequenceiIteratorTest {
+@SuppressWarnings({"ClassHasNoToStringMethod", "AbstractClassWithOnlyOneDirectInheritor", "ProtectedField"})
+abstract class BaseInfiniteSequenceiIteratorTest<E extends Number> {
 
-    @SuppressWarnings("WeakerAccess")
-    protected Double[] expected;
-    @SuppressWarnings("WeakerAccess")
-    protected BaseInfiniteSequenceiIterator<Double> iterator;
+    abstract E[] expectedString();
+
+    abstract BaseInfiniteSequenceiIterator<E> iteratorToTest();
 
     @SuppressWarnings("AssertEqualsBetweenInconvertibleTypes")
     @Test
     final void next() {
 
-        final String expectedStr = Arrays.stream(expected).map(Object::toString)
+        final BaseInfiniteSequenceiIterator<E> iterator = iteratorToTest();
+
+        // @formatter:off
+        final String expectedStr = Arrays
+                .stream(expectedString())
+                .map(Object::toString)
                 .collect(Collectors.joining(", "));
 
-        final String gotStr = IntStream.range(0, expected.length)
-                .mapToObj(x -> iterator.next()).map(Object::toString)
+        final String gotStr = IntStream
+                .range(0, expectedString().length)
+                .mapToObj((int x) -> iterator.next())
+                .map(Object::toString)
                 .collect(Collectors.joining(", "));
 
-        Assertions.assertEquals(expected, gotStr, MessageFormat
-                .format("Got {0} expected {1}", gotStr, expectedStr));
+        Assertions.assertEquals(
+                expectedString(),
+                gotStr,
+                MessageFormat.format("Got {0} expected {1}", gotStr, expectedStr));
+    // @formatter:on
     }
 
 }
