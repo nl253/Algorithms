@@ -40,7 +40,7 @@ public final class DirectedWeightedGraph<E extends Comparable<E>> implements Wei
 
     public DirectedWeightedGraph(final Iterable<? extends E> nodes) {
         this();
-        nodes.forEach(this::add);
+        nodes.forEach(this::insertNode);
     }
 
     /**
@@ -54,19 +54,6 @@ public final class DirectedWeightedGraph<E extends Comparable<E>> implements Wei
         return lookupTable.size();
     }
 
-    /**
-     * Make a connection between two nodes. If they don't already exist, add
-     * them.
-     *
-     * @param a the first node
-     * @param b the second node
-     * @param cost the cost of going from the first to the second node
-     * @return the graph itself
-     */
-
-    @Override
-    public void connect(final E a, final E b, final int cost) {
-    }
 
     /**
      * Lookup the cost of going from nodeA to nodeB. O(1).
@@ -91,9 +78,8 @@ public final class DirectedWeightedGraph<E extends Comparable<E>> implements Wei
      * @return the Graph itself
      */
 
-    @Override
     @SuppressWarnings("rawtypes")
-    public boolean add(final E node) {
+    private boolean insertNode(final E node) {
         if (!lookupTable.keySet().contains(node)) {
             lookupTable.put(node, new HashMap<>(lookupTable.size() + 1));
             // the distance from any node to itself is 0
@@ -273,9 +259,17 @@ public final class DirectedWeightedGraph<E extends Comparable<E>> implements Wei
         return null;
     }
 
-    @Override
-    public void addEdge(final E nodeA, final E nodeB, final int cost) {
+    /**
+     * Make a connection between two nodes. If they don't already exist, add
+     * them.
+     *
+     * @param nodeA the first node
+     * @param nodeB the second node
+     * @param cost the cost of going from the first to the second node
+     * @return the graph itself
+     */
 
-    }
+    @Override
+    public void addEdge(final E nodeA, final E nodeB, final int cost) {}
 }
 
