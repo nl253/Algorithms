@@ -6,6 +6,7 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 /**
  * @author nl253
@@ -14,10 +15,10 @@ import java.util.HashSet;
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface Tree<E extends Comparable<E>> extends Graph<E>, Node<E> {
 
-    Collection<Tree<E>> getChildren();
+    Collection<? extends Tree<E>> getChildren();
 
     @SuppressWarnings("MethodCallInLoopCondition")
-    default Collection<Tree<E>> getDescendants() {
+    default Collection<? extends Tree<E>> getDescendants() {
         if (getChildren().isEmpty()) return getChildren();
         final Deque<Tree<E>> descendants = new ArrayDeque<>(getOrder());
         descendants.addAll(getChildren());
@@ -33,12 +34,10 @@ public interface Tree<E extends Comparable<E>> extends Graph<E>, Node<E> {
         return result;
     }
 
-    void setChildren(Collection<Tree<E>> children);
-
     @SuppressWarnings("unchecked")
-    default Collection<Tree<E>> getLeaves() {
-        return (Collection<Tree<E>>) getDescendants().stream()
-                .filter(x -> x.getChildren().isEmpty());
+    default Collection<? extends Tree<E>> getLeaves() {
+        return getDescendants().stream().filter(x -> x.getChildren().isEmpty())
+                .collect(Collectors.toSet());
     }
 
     @SuppressWarnings({"ConditionalExpression", "WeakerAccess", "ConstantConditions"})

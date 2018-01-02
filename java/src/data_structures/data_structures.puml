@@ -40,7 +40,6 @@ class Edge<E extends Comparable<E>> {
 interface Graph<E extends Comparable<E>> {
     - int order
     + int getOrder()
-    + void connect(E nodeA, E nodeB)
 }
 
 interface AdjecancyList<E extends Comparable<E>> {

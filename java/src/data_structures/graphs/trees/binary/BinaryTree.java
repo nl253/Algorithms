@@ -1,15 +1,17 @@
 package data_structures.graphs.trees.binary;
 
-import data_structures.graphs.Node;
+import data_structures.graphs.Graph;
 import data_structures.graphs.trees.BinaryNode;
 import data_structures.graphs.trees.Tree;
 import java.text.MessageFormat;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * From now on, unless specified otherwise, all comments are quotations from
@@ -27,13 +29,91 @@ import org.jetbrains.annotations.NotNull;
  */
 
 @SuppressWarnings({"MethodReturnOfConcreteClass", "PublicMethodNotExposedInInterface", "MethodParameterOfConcreteClass", "unused", "DesignForExtension", "PublicConstructor", "ParameterHidesMemberVariable", "InstanceVariableNamingConvention", "InstanceVariableOfConcreteClass", "ClassNamingConvention", "ClassWithoutLogger", "WeakerAccess", "InstanceVariableMayNotBeInitialized", "ClassNamePrefixedWithPackageName", "ClassWithTooManyMethods"})
-public class BinaryTree<E extends Comparable<E>> implements data_structures.graphs.trees.BinaryNode<E>, Tree<E> {
+public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, BinaryTree<E>>, Tree<E> {
 
-    private BinaryTree<E> left;
-    private BinaryTree<E> right;
+    private BinaryTree<E> left, right;
+    private E id;
 
-    public BinaryTree(final E data) {
-        super(data);
+    private BinaryTree() {}
+
+    private BinaryTree(final E data) {
+        id = data;
+    }
+
+    public BinaryTree(final Iterable<E> data) {
+        final BinaryTree<E> t = new BinaryTree<>();
+        data.forEach(t::add);
+    }
+
+    public boolean add(final E e) {
+        final int comp = id.compareTo(e);
+        if (comp == 0) return false;
+        else if (comp <= (-1)) {
+            if (getLeft().isPresent()) left.add(e);
+            else left = new BinaryTree<>(e);
+        } else if (comp >= 1) {
+            if (getRight().isPresent()) right.add(e);
+            else right = new BinaryTree<>(e);
+        }
+        return true;
+    }
+
+    private BinaryTree(final E data, final BinaryTree<E> leftChild, final BinaryTree<E> rightChild) {
+        id = data;
+        left = leftChild;
+        right = rightChild;
+    }
+
+    @SuppressWarnings("ConditionalExpression")
+    @Override
+    public Optional<BinaryTree<E>> getLeft() {
+        return (left == null) ? Optional.empty() : Optional.of(left);
+    }
+
+    @Override
+    public void setLeft(final BinaryTree<E> node) {
+        left = node;
+    }
+
+    @SuppressWarnings("ConditionalExpression")
+    @Override
+    public Optional<BinaryTree<E>> getRight() {
+        return (right == null) ? Optional.empty() : Optional.of(right);
+    }
+
+    @SuppressWarnings("ConditionalExpression")
+    @Override
+    public void setRight(final BinaryTree<E> node) {
+        right = node;
+    }
+
+    @Override
+    public E getId() {
+        return id;
+    }
+
+
+    @Override
+    public void setId(final E id) {
+        this.id = id;
+    }
+
+    @Override
+    public Collection<BinaryTree<E>> getChildren() {
+        final List<BinaryTree<E>> children = new ArrayList<>(2);
+        getLeft().ifPresent(children::add);
+        getRight().ifPresent(children::add);
+        return children;
+    }
+
+    @Override
+    public int getOrder() {
+        final AtomicInteger order = new AtomicInteger(1); // this node
+        getRight().ifPresent((Graph<E> rightNode) -> order
+                .getAndAdd(rightNode.getOrder()));
+        getLeft().ifPresent((Graph<E> rightNode) -> order
+                .getAndAdd(rightNode.getOrder()));
+        return order.get();
     }
 
     /**
@@ -54,11 +134,9 @@ public class BinaryTree<E extends Comparable<E>> implements data_structures.grap
 
         while (!queue.isEmpty()) {
             final BinaryTree<E> focus = queue.remove();
-            if (focus.getId().equals(id)) return Optional.ofNullable(focus);
-            getLeft().ifPresent((BinaryNode<E> x) -> queue
-                    .add(((BinaryTree<E>) x)));
-            getRight().ifPresent((BinaryNode<E> x) -> queue
-                    .add(((BinaryTree<E>) x)));
+            if (focus.id.equals(id)) return Optional.ofNullable(focus);
+            getLeft().ifPresent(queue::add);
+            getRight().ifPresent(queue::add);
         }
         return Optional.empty();
     }
@@ -72,23 +150,62 @@ public class BinaryTree<E extends Comparable<E>> implements data_structures.grap
      * @return The value
      */
 
-    @SuppressWarnings({"MethodWithMultipleReturnPoints", "SwitchStatementWithoutDefaultBranch", "SwitchStatement"})
-    public Optional<BinaryTree<E>> getDepthFirstSearch(final E id) {
-        switch (getId().compareTo(id)) {
-            case (-1):
-                final Optional<BinaryNode<E>> maybeLeft = getLeft();
-                return maybeLeft
-                        .flatMap(eBinaryNode -> ((BinaryTree<E>) (eBinaryNode))
-                                .getDepthFirstSearch(id));
-            case 1:
-                final Optional<BinaryNode<E>> maybeRight = getRight();
-                return maybeRight
-                        .flatMap(eBinaryNode -> ((BinaryTree<E>) (eBinaryNode))
-                                .getDepthFirstSearch(id));
-            default:
-                return Optional.of(this);
-        }
+    @SuppressWarnings({"MethodWithMultipleReturnPoints", "SwitchStatementWithoutDefaultBranch", "SwitchStatement", "ConditionalExpression"})
+    public Optional<? extends BinaryTree<E>> getDepthFirstSearch(final E id) {
+
+        final Optional<BinaryTree<E>> l = getLeft()
+                .flatMap((BinaryTree<E> x) -> x.getDepthFirstSearch(id));
+
+        if (l.isPresent()) return l;
+
+        final Optional<BinaryTree<E>> r = getRight()
+                .flatMap((BinaryTree<E> x) -> x.getDepthFirstSearch(id));
+
+        if (r.isPresent()) return r;
+
+        return this.id.equals(id) ? Optional.of(this) : null;
     }
+
+    @SuppressWarnings({"MethodWithMultipleReturnPoints", "SwitchStatementWithoutDefaultBranch", "SwitchStatement", "ConditionalExpression"})
+    public Optional<? extends BinaryTree<E>> get(final E id) {
+        final int comp = this.id.compareTo(id);
+        if (comp <= -1) return getLeft().isPresent() ? getLeft()
+                .flatMap((BinaryTree<E> x) -> x.get(id)) : Optional.empty();
+        else if (comp == 0) return Optional.of(this);
+        else if (comp >= 1) return getRight().isPresent() ? getRight()
+                .flatMap((BinaryTree<E> x) -> x.get(id)) : Optional.empty();
+        else return Optional.empty();
+    }
+
+
+    @SuppressWarnings("CompareToUsesNonFinalVariable")
+    @Override
+    public int compareTo(final BinaryTree<E> t) {
+        return id.compareTo(t.id);
+    }
+
+    @SuppressWarnings("ConditionalExpression")
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if ((obj == null) || (!getClass().equals(obj.getClass()))) return false;
+
+        final BinaryNode<?, ?> that = (BinaryNode<?, ?>) obj;
+
+        return ((getLeft() != null) ? getLeft().equals(that.getLeft()) : (that
+                .getLeft() == null)) && ((getRight() != null) ? getRight()
+                .equals(that.getRight()) : (that.getRight() == null));
+    }
+
+    @SuppressWarnings("ConditionalExpression")
+    @Override
+    public int hashCode() {
+        int result = (getLeft() != null) ? getLeft().hashCode() : 0;
+        result = (31 * result) + ((getRight() == null) ? 0 : getRight()
+                .hashCode());
+        return result;
+    }
+
 
     /**
      * Pretty print.
@@ -110,102 +227,4 @@ public class BinaryTree<E extends Comparable<E>> implements data_structures.grap
         // @formatter:on
     }
 
-    @Override
-    public Optional<BinaryNode<E>> getLeft() {
-        return Optional.empty();
-    }
-
-    @Override
-    public void setLeft() {
-
-    }
-
-    @Override
-    public Optional<BinaryNode<E>> getRight() {
-        return Optional.empty();
-    }
-
-    @Override
-    public void setRight(final BinaryNode<E> node) {
-
-    }
-
-    @Override
-    public Collection<Tree<E>> getChildren() {
-        return null;
-    }
-
-    @Override
-    public void setChildren(final Collection<Tree<E>> children) {
-
-    }
-
-    /**
-     * Make a connection between two nodes. If they don't already exist, add
-     * them.
-     *
-     * @param a the first node
-     * @param b the second node
-     * @param cost the cost of going from the first to the second node
-     * @return the graph itself
-     */
-    @Override
-    public void connect(final E a, final E b, final int cost) {
-
-    }
-
-    @Override
-    public void disconnect(final E a, final E b) {
-
-    }
-
-    @Override
-    public void eject(final E node) {
-
-    }
-
-    @Override
-    public int getCost(final E start, final E dest) {
-        return 0;
-    }
-
-    @Override
-    public int getOrder() {
-        return 0;
-    }
-
-    @Override
-    public void insert(final E node) {
-
-    }
-
-    @Override
-    public int setCost(final int cost) {
-        return 0;
-    }
-
-    @Override
-    public Collection<E> getAdjecentNodes(final E node) {
-        return null;
-    }
-
-    @Override
-    public E getId() {
-        return null;
-    }
-
-    @Override
-    public void setId(final E id) {
-
-    }
-
-    @Override
-    public Collection<Node<E>> getAdjecentNodes() {
-        return null;
-    }
-
-    @Override
-    public int compareTo(@NotNull final Node<E> eNode) {
-        return 0;
-    }
 }

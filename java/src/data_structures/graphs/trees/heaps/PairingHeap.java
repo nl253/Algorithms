@@ -211,7 +211,7 @@ public final class PairingHeap<E extends Comparable<E>> implements Heap<E>, Comp
 
     @Override
     public E getId() {
-        return ;
+        return;
     }
 
     @Override
