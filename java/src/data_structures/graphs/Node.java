@@ -1,6 +1,6 @@
 package data_structures.graphs;
 
-public interface Node<E extends Comparable<E>> {
+public interface Node<E extends Comparable<E>, N extends Node<E, N>> {
 
     E getId();
 

@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 
 @SuppressWarnings({"MethodReturnOfConcreteClass", "PublicMethodNotExposedInInterface", "MethodParameterOfConcreteClass", "unused", "DesignForExtension", "PublicConstructor", "ParameterHidesMemberVariable", "InstanceVariableNamingConvention", "InstanceVariableOfConcreteClass", "ClassNamingConvention", "ClassWithoutLogger", "WeakerAccess", "InstanceVariableMayNotBeInitialized", "ClassNamePrefixedWithPackageName", "ClassWithTooManyMethods"})
-public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, BinaryTree<E>>, Tree<E> {
+public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, BinaryTree<E>>, Tree<E, BinaryTree<E>> {
 
     private BinaryTree<E> left, right;
     private E id;
@@ -72,7 +72,7 @@ public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, Binary
 
     @Override
     public void setLeft(final BinaryTree<E> node) {
-        left = node;
+
     }
 
     @SuppressWarnings("ConditionalExpression")
@@ -81,10 +81,9 @@ public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, Binary
         return (right == null) ? Optional.empty() : Optional.of(right);
     }
 
-    @SuppressWarnings("ConditionalExpression")
     @Override
     public void setRight(final BinaryTree<E> node) {
-        right = node;
+
     }
 
     @Override
@@ -151,7 +150,7 @@ public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, Binary
      */
 
     @SuppressWarnings({"MethodWithMultipleReturnPoints", "SwitchStatementWithoutDefaultBranch", "SwitchStatement", "ConditionalExpression"})
-    public Optional<? extends BinaryTree<E>> getDepthFirstSearch(final E id) {
+    public Optional<BinaryTree<E>> getDepthFirstSearch(final E id) {
 
         final Optional<BinaryTree<E>> l = getLeft()
                 .flatMap((BinaryTree<E> x) -> x.getDepthFirstSearch(id));
@@ -167,7 +166,7 @@ public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, Binary
     }
 
     @SuppressWarnings({"MethodWithMultipleReturnPoints", "SwitchStatementWithoutDefaultBranch", "SwitchStatement", "ConditionalExpression"})
-    public Optional<? extends BinaryTree<E>> get(final E id) {
+    public Optional<BinaryTree<E>> get(final E id) {
         final int comp = this.id.compareTo(id);
         if (comp <= -1) return getLeft().isPresent() ? getLeft()
                 .flatMap((BinaryTree<E> x) -> x.get(id)) : Optional.empty();
@@ -177,12 +176,6 @@ public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, Binary
         else return Optional.empty();
     }
 
-
-    @SuppressWarnings("CompareToUsesNonFinalVariable")
-    @Override
-    public int compareTo(final BinaryTree<E> t) {
-        return id.compareTo(t.id);
-    }
 
     @SuppressWarnings("ConditionalExpression")
     @Override

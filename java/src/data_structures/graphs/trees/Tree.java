@@ -6,6 +6,7 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -13,20 +14,20 @@ import java.util.stream.Collectors;
  */
 
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
-public interface Tree<E extends Comparable<E>> extends Graph<E>, Node<E> {
+public interface Tree<E extends Comparable<E>, T extends Tree<E, T>> extends Graph<E>, Node<E, T> {
 
-    Collection<? extends Tree<E>> getChildren();
+    Collection<T> getChildren();
 
     @SuppressWarnings("MethodCallInLoopCondition")
-    default Collection<? extends Tree<E>> getDescendants() {
-        if (getChildren().isEmpty()) return getChildren();
-        final Deque<Tree<E>> descendants = new ArrayDeque<>(getOrder());
+    default Set<T> getDescendants() {
+        if (getChildren().isEmpty()) return new HashSet<>(getChildren());
+        final Deque<T> descendants = new ArrayDeque<>(getOrder());
         descendants.addAll(getChildren());
 
-        final Collection<Tree<E>> result = new HashSet<>(getOrder());
+        final Set<T> result = new HashSet<>(getOrder());
 
         while (!descendants.isEmpty()) {
-            final Tree<E> focus = descendants.pollFirst();
+            final T focus = descendants.pollFirst();
             result.add(focus);
             if (!focus.getDescendants().isEmpty())
                 descendants.addAll(focus.getChildren());
@@ -35,7 +36,7 @@ public interface Tree<E extends Comparable<E>> extends Graph<E>, Node<E> {
     }
 
     @SuppressWarnings("unchecked")
-    default Collection<? extends Tree<E>> getLeaves() {
+    default Set<T> getLeaves() {
         return getDescendants().stream().filter(x -> x.getChildren().isEmpty())
                 .collect(Collectors.toSet());
     }

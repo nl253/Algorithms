@@ -8,7 +8,7 @@ import java.util.Optional;
  */
 
 @SuppressWarnings({"AbstractMethodWithMissingImplementations", "InterfaceWithOnlyOneDirectInheritor", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
-public interface BinaryNode<E extends Comparable<E>, N extends BinaryNode<E, N>> extends Node<E>, Comparable<N> {
+public interface BinaryNode<E extends Comparable<E>, N extends BinaryNode<E, N>> extends Node<E, N> {
 
     Optional<N> getLeft();
 
