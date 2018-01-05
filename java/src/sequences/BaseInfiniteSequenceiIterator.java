@@ -9,9 +9,11 @@ import java.util.stream.IntStream;
  * @author nl253
  */
 
-@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
-public abstract class BaseInfiniteSequenceiIterator<E extends Number> implements Iterator<E> {
+@SuppressWarnings({"AbstractClassWithOnlyOneDirectInheritor", "rawtypes"})
+public abstract class BaseInfiniteSequenceiIterator implements Iterator<Double> {
 
+    @Override
+    public abstract Double next();
 
     /**
      * Infinite sequences can always produce another number, hence, hasNext() always returns true.

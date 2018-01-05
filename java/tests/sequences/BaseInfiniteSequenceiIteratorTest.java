@@ -8,32 +8,32 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings({"ClassHasNoToStringMethod", "AbstractClassWithOnlyOneDirectInheritor", "ProtectedField"})
-abstract class BaseInfiniteSequenceiIteratorTest<E extends Number> {
+abstract class BaseInfiniteSequenceiIteratorTest {
 
-    abstract E[] expectedString();
+    abstract Double[] expected();
 
-    abstract BaseInfiniteSequenceiIterator<E> iteratorToTest();
+    abstract BaseInfiniteSequenceiIterator iteratorToTest();
 
-    @SuppressWarnings("AssertEqualsBetweenInconvertibleTypes")
+    @SuppressWarnings({"AssertEqualsBetweenInconvertibleTypes", "LawOfDemeter"})
     @Test
     final void next() {
 
-        final BaseInfiniteSequenceiIterator<E> iterator = iteratorToTest();
+        final BaseInfiniteSequenceiIterator iterator = iteratorToTest();
 
         // @formatter:off
         final String expectedStr = Arrays
-                .stream(expectedString())
-                .map(Object::toString)
+                .stream(expected())
+                .map(String::valueOf)
                 .collect(Collectors.joining(", "));
 
         final String gotStr = IntStream
-                .range(0, expectedString().length)
-                .mapToObj((int x) -> iterator.next())
-                .map(Object::toString)
+                .range(0, expected().length)
+                .mapToDouble((int x) -> iterator.next())
+                .mapToObj(String::valueOf)
                 .collect(Collectors.joining(", "));
 
         Assertions.assertEquals(
-                expectedString(),
+                expectedStr,
                 gotStr,
                 MessageFormat.format("Got {0} expected {1}", gotStr, expectedStr));
     // @formatter:on

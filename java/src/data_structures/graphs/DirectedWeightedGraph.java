@@ -11,13 +11,14 @@ import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author norbert
  */
 
 @SuppressWarnings({"WeakerAccess", "DesignForExtension", "AssignmentToCollectionOrArrayFieldFromParameter", "unused", "ParameterHidesMemberVariable", "PublicMethodNotExposedInInterface", "InstanceVariableMayNotBeInitialized", "InstanceVariableNamingConvention", "ClassNamingConvention", "PublicConstructor", "ClassWithoutLogger", "FieldNotUsedInToString", "MethodReturnOfConcreteClass", "ImplicitCallToSuper", "NonBooleanMethodNameMayNotStartWithQuestion", "UnusedReturnValue", "CallToSuspiciousStringMethod", "AbstractClassNeverImplemented", "AbstractClassWithoutAbstractMethods", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
-public final class DirectedWeightedGraph<E extends Comparable<E>> implements WeightedGraph<E>, AdjecancyList<E> {
+public final class DirectedWeightedGraph<E extends Comparable<E>> implements WeightedGraph<E, DirectedWeightedGraph<E>>, AdjacencyList<E, DirectedWeightedGraph<E>> {
 
     /**
      * a Map that emulates a 2-dimensional matrix for lookup.
@@ -25,6 +26,7 @@ public final class DirectedWeightedGraph<E extends Comparable<E>> implements Wei
 
     @SuppressWarnings({"FieldMayBeFinal", "CollectionWithoutInitialCapacity"})
     private Map<E, Map<E, Integer>> lookupTable = new HashMap<>();
+    private int order;
 
     /**
      * Allow empty constructor.
@@ -40,7 +42,7 @@ public final class DirectedWeightedGraph<E extends Comparable<E>> implements Wei
 
     public DirectedWeightedGraph(final Iterable<? extends E> nodes) {
         this();
-        nodes.forEach(this::insertNode);
+        nodes.forEach(this::add);
     }
 
     /**
@@ -52,6 +54,11 @@ public final class DirectedWeightedGraph<E extends Comparable<E>> implements Wei
     @Override
     public int getOrder() {
         return lookupTable.size();
+    }
+
+    @Override
+    public void setOrder(final int val) {
+        this.order = val;
     }
 
 
@@ -74,18 +81,18 @@ public final class DirectedWeightedGraph<E extends Comparable<E>> implements Wei
     /**
      * Add a node to this Graph. You need to provide a String identifier.
      *
-     * @param node a String identifier
+     * @param item a String identifier
      * @return the Graph itself
      */
 
+    @Override
     @SuppressWarnings("rawtypes")
-    private boolean insertNode(final E node) {
-        if (!lookupTable.keySet().contains(node)) {
-            lookupTable.put(node, new HashMap<>(lookupTable.size() + 1));
+    public void add(final E item) {
+        if (!lookupTable.keySet().contains(item)) {
+            lookupTable.put(item, new HashMap<>(lookupTable.size() + 1));
             // the distance from any node to itself is 0
-            lookupTable.get(node).put(node, 0);
+            lookupTable.get(item).put(item, 0);
         }
-        return false;
     }
 
     // /**
@@ -241,22 +248,39 @@ public final class DirectedWeightedGraph<E extends Comparable<E>> implements Wei
         return Optional.empty();
     }
 
-    private Set<E> getAdjecentNodes(final E node) {
-        final Set<E> neighbours = new HashSet<>();
+    @SuppressWarnings("IfMayBeConditional")
+    @Override
+    public Set<E> getAdjecentNodes(final E start) {
+        // @formatter:off
+        if (lookupTable.containsKey(start))
 
-        for (final Map<E, Integer> i : lookupTable.values())
-            for (final E id : lookupTable.keySet()) {
-                final Integer maybe = i.getOrDefault(id, null);
-                if ((maybe != null) && (maybe >= 1)) neighbours.add(id);
-            }
+            return lookupTable.get(start)
+                    .entrySet()
+                    .stream()
+                    .filter((Map.Entry<E, Integer> entry) -> entry
+                            .getValue() >= 1)
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toSet());
 
-        return neighbours;
+        else return new HashSet<>(0);
+        // @formatter:on
     }
 
 
     @Override
     public Set<Edge<E>> getEdges() {
-        return null;
+        // @formatter:off
+        return lookupTable
+                .keySet()
+                .stream()
+                .flatMap((E nodeId) -> lookupTable.get(nodeId)
+                        .entrySet()
+                        .stream()
+                        .filter(entry -> entry.getValue() >= 1)
+                        .map((Map.Entry<E, Integer> entry) -> new Edge<>(
+                                nodeId, entry.getValue(), entry.getKey())))
+                .collect(Collectors.toSet());
+        // @formatter:off
     }
 
     /**
@@ -270,6 +294,10 @@ public final class DirectedWeightedGraph<E extends Comparable<E>> implements Wei
      */
 
     @Override
-    public void addEdge(final E nodeA, final E nodeB, final int cost) {}
+    public void addEdge(final E nodeA, final int cost, final E nodeB) {
+        if (!lookupTable.containsKey(nodeA)) add(nodeA);
+        if (!lookupTable.containsKey(nodeB)) add(nodeB);
+        lookupTable.get(nodeA).put(nodeB, cost);
+    }
 }
 

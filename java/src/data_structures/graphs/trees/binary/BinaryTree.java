@@ -33,6 +33,7 @@ public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, Binary
 
     private BinaryTree<E> left, right;
     private E id;
+    private int order;
 
     private BinaryTree() {}
 
@@ -45,9 +46,10 @@ public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, Binary
         data.forEach(t::add);
     }
 
-    public boolean add(final E e) {
+    @Override
+    public void add(final E e) {
         final int comp = id.compareTo(e);
-        if (comp == 0) return false;
+        if (comp == 0) return;
         else if (comp <= (-1)) {
             if (getLeft().isPresent()) left.add(e);
             else left = new BinaryTree<>(e);
@@ -55,7 +57,6 @@ public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, Binary
             if (getRight().isPresent()) right.add(e);
             else right = new BinaryTree<>(e);
         }
-        return true;
     }
 
     private BinaryTree(final E data, final BinaryTree<E> leftChild, final BinaryTree<E> rightChild) {
@@ -72,7 +73,7 @@ public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, Binary
 
     @Override
     public void setLeft(final BinaryTree<E> node) {
-
+        left = node;
     }
 
     @SuppressWarnings("ConditionalExpression")
@@ -83,12 +84,12 @@ public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, Binary
 
     @Override
     public void setRight(final BinaryTree<E> node) {
-
+        right = node;
     }
 
     @Override
-    public E getId() {
-        return id;
+    public Optional<E> getId() {
+        return Optional.ofNullable(id);
     }
 
 
@@ -108,11 +109,16 @@ public class BinaryTree<E extends Comparable<E>> implements BinaryNode<E, Binary
     @Override
     public int getOrder() {
         final AtomicInteger order = new AtomicInteger(1); // this node
-        getRight().ifPresent((Graph<E> rightNode) -> order
+        getRight().ifPresent((Graph<E, BinaryTree<E>> rightNode) -> order
                 .getAndAdd(rightNode.getOrder()));
-        getLeft().ifPresent((Graph<E> rightNode) -> order
+        getLeft().ifPresent((Graph<E, BinaryTree<E>> rightNode) -> order
                 .getAndAdd(rightNode.getOrder()));
         return order.get();
+    }
+
+    @Override
+    public void setOrder(final int val) {
+        order = val;
     }
 
     /**

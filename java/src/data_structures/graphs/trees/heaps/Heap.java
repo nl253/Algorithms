@@ -8,7 +8,8 @@ import java.util.Optional;
  */
 
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
-public interface Heap<E extends Comparable<E>> extends Tree<E> {
+public interface Heap<E extends Comparable<E>, H extends Heap<E, H>> extends Tree<E, H> {
 
     Optional<E> findMin();
+
 }

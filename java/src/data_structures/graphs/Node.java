@@ -1,12 +1,14 @@
 package data_structures.graphs;
 
+import java.util.Optional;
+
 public interface Node<E extends Comparable<E>, N extends Node<E, N>> {
 
-    E getId();
+    Optional<E> getId();
 
     void setId(final E id);
 
-    default E getData() {
+    default Optional<E> getData() {
         return getId();
     }
 

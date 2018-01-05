@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  */
 
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
-public interface Tree<E extends Comparable<E>, T extends Tree<E, T>> extends Graph<E>, Node<E, T> {
+public interface Tree<E extends Comparable<E>, T extends Tree<E, T>> extends Graph<E, T>, Node<E, T> {
 
     Collection<T> getChildren();
 

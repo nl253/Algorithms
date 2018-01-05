@@ -46,22 +46,27 @@ public final class Matrix {
 
         double result = 0.0d;
 
-        for (int i = 0; i < matrix[0].length; i++) {
+        final int matrixEdgeLen = matrix.length;
+        final int subMatrixEdgeLen = matrixEdgeLen - 1;
 
-            final double[][] subMatrix = new double[matrix.length - 1][matrix.length - 1];
+        for (int i = 0; i < matrixEdgeLen; i++) {
 
-            boolean seen = false;
+            final double[][] subMatrix = new double[subMatrixEdgeLen][subMatrixEdgeLen];
 
-            for (int row = 0; row < matrix.length; row++)
+            for (int dim1 = 1; dim1 < matrixEdgeLen; dim1++) {
 
-                for (int column = 0; column < matrix[row].length; column++)
+                boolean seen = false;
 
-                    if (column == i) seen = true;
+                for (int dim2 = 0; dim2 < matrixEdgeLen; dim2++) {
+
+                    if (dim2 == i) seen = true;
 
                     else if (seen)
-                        subMatrix[row - 1][column - 1] = matrix[row][column];
+                        subMatrix[dim1 - 1][dim2 - 1] = matrix[dim1][dim2];
 
-                    else subMatrix[row][column] = matrix[row][column];
+                    else subMatrix[dim1 - 1][dim2] = matrix[dim1][dim2];
+                }
+            }
 
             //noinspection UnclearExpression,ConditionalExpression,ImplicitNumericConversion
             result += ((i % 2 == 0) ? 1 : -1) * matrix[0][i] * determinant(subMatrix);

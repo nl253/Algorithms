@@ -1,13 +1,15 @@
 package sequences;
 
-import org.junit.jupiter.api.BeforeEach;
-
+@SuppressWarnings("MagicNumber")
 class FibonacciIteratorTest extends BaseInfiniteSequenceiIteratorTest {
 
-    @BeforeEach
-    void setUp() {
-        expected = new Double[]{3d, 5d, 8d, 13d, 21d};
-        iterator = new FibonacciIterator(1, 2);
+    @Override
+    final Double[] expected() {
+        return new Double[]{3.0d, 5.0d, 8.0d, 13.0d, 21.0d};
     }
 
+    @Override
+    final BaseInfiniteSequenceiIterator iteratorToTest() {
+        return new FibonacciIterator(1.0, 2.0);
+    }
 }

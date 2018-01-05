@@ -2,7 +2,6 @@ package sorts;
 
 import java.security.SecureRandom;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,8 +25,7 @@ class BaseSortingAlgorithmTest<E extends Comparable<E>> {
      * @return a {@link List} of random {@link Integer}s.
      */
 
-    @SuppressWarnings("WeakerAccess")
-    protected final List<E> getRandomIntegers() {
+    protected static <E extends Comparable<E>> List<E> getRandomIntegers() {
         return getRandomIntegers(DEFAULT_RANDOM_INTEGERS_LEN);
     }
 
@@ -40,11 +38,11 @@ class BaseSortingAlgorithmTest<E extends Comparable<E>> {
 
     // @formatter:off
     @SuppressWarnings("WeakerAccess")
-    protected final List<E> getRandomIntegers(final int randIntegersLen) {
-        return new SecureRandom()
+    protected static <E extends Comparable<E>> List<E> getRandomIntegers(final int randIntegersLen) {
+        return ((List<E>) new SecureRandom()
                 .ints(randIntegersLen)
-                .boxed()
-                .collect(ArrayList<E>::new, ArrayList::add, ArrayList<E>::addAll);
+                .mapToObj(String::valueOf)
+                .collect(Collectors.toList()));
     }
 
     /**

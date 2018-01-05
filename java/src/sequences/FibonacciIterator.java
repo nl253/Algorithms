@@ -5,7 +5,7 @@ package sequences;
  */
 
 @SuppressWarnings("StandardVariableNames")
-public class FibonacciIterator extends BaseInfiniteSequenceiIterator<Double> {
+public class FibonacciIterator extends BaseInfiniteSequenceiIterator {
 
     private double a;
     private double b;
