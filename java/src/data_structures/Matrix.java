@@ -1,7 +1,5 @@
 package data_structures;
 
-import java.util.Arrays;
-
 /**
  * @author nl253
  */
@@ -24,7 +22,7 @@ public final class Matrix {
         assert canMultiply(matrixA, matrixB) : "[ERROR] Matrix multiplication is not defined on these matrices";
 
         final double[][] result = new double[matrixA[0].length][matrixB.length];
-        Arrays.fill(result, 0);
+
         for (int row = 0; row < result.length; row++)
             for (int column = 0; column < result[row].length; column++)
                 for (int scalarIndex = 0; scalarIndex < matrixA[row].length; scalarIndex++)
@@ -33,6 +31,8 @@ public final class Matrix {
     }
 
     /**
+     * Calculate the determinant of a square matrix (a 2d array of size n x n where n is greater than 1).
+     *
      * @param matrix input Matrix (2d array)
      * @return determinant of matrix
      */
@@ -40,6 +40,7 @@ public final class Matrix {
     @SuppressWarnings({"AlibabaUndefineMagicConstant", "ContinueStatement", "WeakerAccess", "MethodWithMultipleLoops"})
     public static double determinant(final double[][] matrix) {
         assert isSquare(matrix) : "[ERROR] The matrix is not square.";
+        assert matrix.length > 1 : "You must have a n x n matrix with n > 1";
 
         if (matrix.length == 2)
             return (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0]);
