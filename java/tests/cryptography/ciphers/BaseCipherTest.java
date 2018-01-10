@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings({"ClassHasNoToStringMethod", "FeatureEnvy", "CallToSuspiciousStringMethod", "AbstractClassWithOnlyOneDirectInheritor"})
 abstract class BaseCipherTest {
 
-    @SuppressWarnings("PackageVisibleField")
-    BaseCipher cipher;
+    abstract BaseCipher getCipher();
 
     // @formatter:off
 
@@ -17,7 +16,7 @@ abstract class BaseCipherTest {
         final String randomMsg = BaseCipher.randomMsg();
 
         Assertions.assertEquals(
-                cipher.decode(cipher.encode(randomMsg)),
+                getCipher().decode(getCipher().encode(randomMsg)),
                 randomMsg,
                 "Encoding / Decoding failed");
     }
@@ -25,10 +24,10 @@ abstract class BaseCipherTest {
     @Test
     final void decode() {
 
-        final String encoded = cipher.encode();
+        final String encoded = getCipher().encode();
 
         Assertions.assertEquals(
-                cipher.encode(cipher.decode(encoded)),
+                getCipher().encode(getCipher().decode(encoded)),
                 encoded, "Encoding / Decoding failed");
     }
 

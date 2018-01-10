@@ -1,8 +1,8 @@
 package sorts;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * All content in javadocs, unless specified otherwise, is from https://en.wikipedia.org/wiki/Quicksort.
@@ -20,17 +20,20 @@ import java.util.stream.Stream;
  * @param <E>
  */
 
-@SuppressWarnings({"UtilityClassCanBeEnum", "LocalVariableOfConcreteClass", "AccessingNonPublicFieldOfAnotherObject"})
+@SuppressWarnings({"UtilityClassCanBeEnum", "LocalVariableOfConcreteClass", "AccessingNonPublicFieldOfAnotherObject", "MethodWithMultipleLoops"})
 final class QuickSort<E extends Comparable<E>> extends BaseSortingAlgorithm<E> {
+
+    QuickSort(final List<E> unsortedData) {
+        super(unsortedData);
+    }
 
     /**
      * Implementation of the compulsory {@code void sort()} method.
      */
 
     @Override
-    List<E> sort(final List<E> data) {
-        sort(0, data.size() - 1, data);
-        return data;
+    void sort() {
+        sort(0, getUnsortedData().size() - 1);
     }
 
     /**
@@ -38,29 +41,56 @@ final class QuickSort<E extends Comparable<E>> extends BaseSortingAlgorithm<E> {
      * @param right right boundary
      */
 
-    private void sort(final int left, final int right, final List<E> data) {
-        if (left < right) {
-            final int pivotIndex = partition(left, right, data);
-            sort(left, pivotIndex - 1, data);
-            sort(pivotIndex + 1, right, data);
+    private void sort(final int left, final int right) {
+        // don't sort 1 element Lists
+        if ((right - left) > 1) {
+            final int pivotIndex = partition(left, right);
+            sort(left, pivotIndex);
+            sort(pivotIndex + 1, right);
         }
     }
 
     /**
-     * @param left the left boundary
-     * @param right the right boundary
+     * @param leftBound the left boundary
+     * @param rightBound the right boundary
      * @return the pivot
      */
 
     @SuppressWarnings({"AssignmentToMethodParameter", "ForLoopWithMissingComponent"})
-    private int partition(int left, final int right, final List<E> data) {
-        final int pivotIndex = (right - left) / 2;
-        final E pivot = data.get(pivotIndex);
-        final List<E> sublist = data.subList(left, right + 1);
-        final List<E> result = Stream.concat(sublist.stream().filter(x -> x
-                .compareTo(pivot) <= -1), sublist.stream().filter(x -> x
-                .compareTo(pivot) >= 0)).collect(Collectors.toList());
-        for (; left <= right; left++) data.set(left, result.get(left));
+    private int partition(int leftBound, final int rightBound) {
+
+        final int pivotIndex = leftBound + ((rightBound - leftBound) / 2);
+        final E pivot = getUnsortedData().get(pivotIndex);
+
+        final int size = rightBound - leftBound;
+
+        final Deque<E> smaller = new ArrayDeque<>(size);
+        final Deque<E> equal = new ArrayDeque<>(size / 2);
+        final Deque<E> larger = new ArrayDeque<>(size);
+
+        for (int i = leftBound; i <= rightBound; i++) {
+            final E e = getUnsortedData().get(i);
+            final int compResult = e.compareTo(pivot);
+            if (compResult >= 1) larger.addLast(e);
+            else if (compResult <= (-1)) smaller.addLast(e);
+            else equal.addLast(e);
+        }
+
+        while (!smaller.isEmpty()) {
+            getUnsortedData().set(leftBound, smaller.removeFirst());
+            leftBound++;
+        }
+
+        while (!equal.isEmpty()) {
+            getUnsortedData().set(leftBound, equal.removeFirst());
+            leftBound++;
+        }
+
+        while (!larger.isEmpty()) {
+            getUnsortedData().set(leftBound, larger.removeFirst());
+            leftBound++;
+        }
+
         return pivotIndex;
     }
 }

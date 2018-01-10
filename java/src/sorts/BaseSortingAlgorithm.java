@@ -1,7 +1,5 @@
 package sorts;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,18 +13,37 @@ import java.util.logging.Logger;
 @SuppressWarnings({"ClassHasNoToStringMethod", "AbstractClassWithOnlyOneDirectInheritor", "AbstractClassNeverImplemented", "ProtectedField", "PackageVisibleField", "NestedAssignment", "UnsecureRandomNumberGeneration", "unchecked", "RedundantTypeArguments", "PublicConstructorInNonPublicClass", "ConstructorNotProtectedInAbstractClass", "WeakerAccess"})
 abstract class BaseSortingAlgorithm<E extends Comparable<E>> {
 
+    private final List<E> unsortedData;
+
+    /**
+     * @param unsortedData {@link List} of {@link Comparable} items to sort
+     */
+
+    protected BaseSortingAlgorithm(final List<E> unsortedData) {
+        this.unsortedData = unsortedData;
+    }
+
+    /** {@link Logger} for the class */
     @SuppressWarnings("FieldNamingConvention")
     private final Logger log = Logger.getAnonymousLogger();
 
     /**
-     * The method that sorting algorithms need to implement.
+     * @return unsorted data ({@link List} of {@link Comparable}s)
      */
 
-    @SuppressWarnings("OverloadedMethodsWithSameNumberOfParameters")
-    final List<E> sort(final Collection<E> data) {
-        return sort(new ArrayList<>(data));
+    final List<E> getUnsortedData() {
+        return unsortedData;
     }
 
-    abstract List<E> sort(List<E> data);
+    /**
+     * Implementation of the compulsory {@code void sort()} method.
+     */
+
+    abstract void sort();
+
+    final List<E> sorted() {
+        sort();
+        return unsortedData;
+    }
 }
 

@@ -1,6 +1,7 @@
 package data_structures;
 
 import java.text.MessageFormat;
+import linear_algebra.Matrix;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
