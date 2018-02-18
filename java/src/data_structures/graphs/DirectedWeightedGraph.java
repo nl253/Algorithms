@@ -153,7 +153,7 @@ public final class DirectedWeightedGraph<E extends Comparable<E>> implements Wei
     public Optional<List<E>> shortestRoute(final E start, final E dest) {
 
         /**
-         * To be used by the PriorityQueue below.
+         * To be used by the HeapBasedPriorityQueue below.
          * Part of Dijkstra's Algorithm.
          */
 

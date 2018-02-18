@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * @param <E>
  * @author nl253
  */
 
@@ -64,8 +65,7 @@ public final class EfficientDisjointSet<E extends Comparable<E>> implements Unio
 
     @Override
     public void union(final E first, final E second) {
-        final E shorter;
-        final E taller;
+        final E shorter, taller;
         if (getHeight(first) >= getHeight(second)) {
             taller = first;
             shorter = second;

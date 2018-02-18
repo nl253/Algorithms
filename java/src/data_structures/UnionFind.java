@@ -23,6 +23,7 @@ import java.util.Collection;
  * @author nl253
  */
 
+@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface UnionFind<E extends Comparable<E>> {
 
     /**
