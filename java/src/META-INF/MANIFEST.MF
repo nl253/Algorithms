@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Class-Path: junit-jupiter-api-5.0.0.jar apiguardian-api-1.0.0.jar open
+ test4j-1.0.0.jar junit-platform-commons-1.0.0.jar junit-jupiter-api-5
+ .0.0.jar apiguardian-api-1.0.0.jar opentest4j-1.0.0.jar junit-platfor
+ m-commons-1.0.0.jar
+

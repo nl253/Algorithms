@@ -2,6 +2,11 @@ package ai;
 
 import java.util.Collection;
 
+/**
+ *
+ */
+
+@SuppressWarnings("OverlyLongLambda")
 public final class MiniMax {
 
     private interface Node {
@@ -37,8 +42,7 @@ public final class MiniMax {
         if (adjNodes.isEmpty()) return root;
 
         return adjNodes.stream()
-                .map(x -> depthLimitedMiniMax(x, depth - 1, !max))
-                .max((n1, n2) -> {
+                .map(x -> depthLimitedMiniMax(x, depth - 1, !max)).max((n1, n2) -> {
                     if (n1.getValue() == n2.getValue()) return 1;
                     else if (max)
                         return Integer.max(n1.getValue(), n2.getValue());
